@@ -4,6 +4,14 @@ import 'package:http/http.dart' as http;
 
 
 class NetworkManager implements INetworkManager {
+  static final _shared = NetworkManager._internal();
+
+  NetworkManager._internal();
+
+  factory NetworkManager() {
+    return _shared;
+  }
+
   @override
   Future<T> requestData<T>({required T Function(Map<String, dynamic>) decoder, required String urlString, Map<String, dynamic>? body}) async {
     Uri uri = Uri.parse(urlString);
