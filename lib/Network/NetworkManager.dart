@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'package:flutter_product/Network/INetworkManager.dart';
 import 'package:http/http.dart' as http;
 
-import 'BaseModel.dart';
 
 class NetworkManager implements INetworkManager {
   @override
