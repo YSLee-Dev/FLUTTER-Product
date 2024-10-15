@@ -8,14 +8,15 @@ import '../Network/NetworkManager.dart';
 
 class HomeViewModel with ChangeNotifier {
   bool nowListShowTapped = true;
-  int nowPage = 1;
+  int nowPage = 0;
+  bool nowLoading = false;
   final IProductManager _productManager;
 
   List<ProductModel> nowProductModelList = [];
 
   HomeViewModel({IProductManager? productManager})
    : _productManager = productManager ?? ProductManager() {
-    requestProductList(1, 10);
+    _requestProductList();
   }
 
   void nowTappedIsList(bool isList) {
@@ -23,8 +24,18 @@ class HomeViewModel with ChangeNotifier {
     notifyListeners();
   }
 
-  void requestProductList(int page, int count) async {
-    nowProductModelList = await _productManager.requestMainProduct(1, 10);
+  void moreProductListRequet() {
+    _requestProductList();
+  }
+
+  void _requestProductList({int count = 10}) async {
+    nowPage ++;
+    nowLoading = true;
+    nowProductModelList += await _productManager.requestMainProduct(nowPage, count);
+
     notifyListeners();
+    nowLoading = false;
+
+    print("${nowPage} ${count}");
   }
 }

@@ -12,10 +12,30 @@ class HomeWidget extends StatefulWidget {
 }
 
 class _HomeWidgetState extends State<HomeWidget> {
+  late ScrollController _scrollController;
+  late final _provider = context.read<HomeViewModel>();
+
+  @override
+  void initState() {
+    super.initState();
+
+    _scrollController = ScrollController();
+    _scrollController.addListener (() {
+      if ((_scrollController.position.maxScrollExtent - 100 < _scrollController.offset) && !_provider.nowLoading) {
+        _provider.moreProductListRequet();
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final provider = context.watch<HomeViewModel>();
-
     return Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.white,
@@ -72,6 +92,7 @@ class _HomeWidgetState extends State<HomeWidget> {
               if (provider.nowListShowTapped)
                 Expanded(
                   child: ListView.builder(
+                      controller: _scrollController,
                       itemCount: provider.nowProductModelList.length,
                       itemBuilder: (context, index) {
                         return Container(
@@ -94,8 +115,7 @@ class _HomeWidgetState extends State<HomeWidget> {
                                           width: 120,
                                           height: 120,
                                           child: child);
-                                    }
-                                    ;
+                                    };
                                     return SizedBox(
                                       width: 120,
                                       height: 120,
@@ -153,6 +173,7 @@ class _HomeWidgetState extends State<HomeWidget> {
               if (!provider.nowListShowTapped)
                 Expanded(
                   child: GridView.builder(
+                      controller: _scrollController,
                       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: 2, mainAxisSpacing: 10, crossAxisSpacing: 10),
                       itemCount: provider.nowProductModelList.length,
