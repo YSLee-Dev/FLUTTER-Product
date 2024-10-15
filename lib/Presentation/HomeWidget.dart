@@ -224,27 +224,29 @@ class _HomeWidgetState extends State<HomeWidget> {
                                       mainAxisAlignment: MainAxisAlignment.center,
                                       crossAxisAlignment: CrossAxisAlignment.center,
                                       children: [
-                                        Spacer(),
-                                        Text(
+                                        Flexible(child: Text(
                                           '${provider.nowProductModelList[index].price}',
+                                            textAlign: TextAlign.right,
                                           style: TextStyle(
                                               color: Colors.white,
                                               fontSize: 15,
                                               fontWeight: FontWeight.bold),
                                           maxLines: 1,
-                                          overflow: TextOverflow.ellipsis,
+                                          overflow: TextOverflow.ellipsis
+                                        ),
                                         ),
                                         SizedBox(width: 5),
-                                        Text(
-                                          '${provider.nowProductModelList[index].tags?.first ?? ""}',
-                                          style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 15,
-                                              fontWeight: FontWeight.normal),
-                                          maxLines: 1,
-                                          overflow: TextOverflow.ellipsis,
-                                        ),
-                                        Spacer()
+                                        Flexible(child:  Text(
+                                         '${provider.nowProductModelList[index].tags?.first ?? ""}',
+                                         style: TextStyle(
+                                             color: Colors.white,
+                                             fontSize: 15,
+                                             fontWeight: FontWeight.normal,
+                                         ),
+                                         maxLines: 1,
+                                         overflow: TextOverflow.ellipsis,
+                                       ),
+                                       ),
                                       ],
                                     )
                                   ],
