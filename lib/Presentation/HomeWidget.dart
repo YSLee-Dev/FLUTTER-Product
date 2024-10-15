@@ -33,6 +33,11 @@ class _HomeWidgetState extends State<HomeWidget> {
     super.dispose();
   }
 
+  void _viewCategoryBtnTapped({required bool isList}) {
+    _scrollController.jumpTo(0);
+    _provider.nowTappedIsList(isList);
+  }
+
   @override
   Widget build(BuildContext context) {
     final provider = context.watch<HomeViewModel>();
@@ -56,7 +61,7 @@ class _HomeWidgetState extends State<HomeWidget> {
                                 ? Colors.black
                                 : Colors.black26),
                         onPressed: () {
-                          provider.nowTappedIsList(true);
+                          _viewCategoryBtnTapped(isList: true);
                         },
                         child: Text(
                           "리스트 보기",
@@ -71,7 +76,7 @@ class _HomeWidgetState extends State<HomeWidget> {
                                 ? Colors.black
                                 : Colors.black26),
                         onPressed: () {
-                          provider.nowTappedIsList(false);
+                          _viewCategoryBtnTapped(isList: false);
                         },
                         child: Text(
                           "격자 보기",
