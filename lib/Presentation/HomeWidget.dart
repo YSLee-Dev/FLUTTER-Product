@@ -80,18 +80,31 @@ class _HomeWidgetState extends State<HomeWidget> {
                   ),
                 ],
               ),
-              SizedBox(
-                height: 30,
-              ),
+              SizedBox(height: 30),
               if (provider.nowProductModelList.isEmpty)
                 SizedBox(
                   width: 100,
                   height: 100,
                   child: CircularProgressIndicator(),
                 ),
-              if (provider.nowListShowTapped)
-                Expanded(
-                  child: ListView.builder(
+              Expanded(
+                child: AnimatedSwitcher(
+                  duration: Duration(milliseconds: 250),
+                  transitionBuilder: (Widget child, Animation<double> animation) {
+                    return SlideTransition(
+                      position: Tween<Offset>(
+                        begin: Offset(_provider.nowListShowTapped ? 0.2 : -0.2, 0.0),
+                        end: Offset(0.0, 0.0),
+                      ).animate(animation),
+                      child: FadeTransition(
+                        opacity: animation,
+                        child: child,
+                      ),
+                    );
+                  },
+                  child: provider.nowListShowTapped
+                      ? ListView.builder(
+                      key: ValueKey<bool>(true),
                       controller: _scrollController,
                       itemCount: provider.nowProductModelList.length,
                       itemBuilder: (context, index) {
@@ -102,99 +115,89 @@ class _HomeWidgetState extends State<HomeWidget> {
                                 Container(
                                   height: 120,
                                   decoration: BoxDecoration(
-                                      borderRadius:
-                                          BorderRadius.all(Radius.circular(15)),
-                                      border: Border.all(
-                                          color: Colors.black38, width: 1)),
+                                      borderRadius: BorderRadius.all(Radius.circular(15)),
+                                      border: Border.all(color: Colors.black38, width: 1)),
                                   child: Image.network(
                                       '${provider.nowProductModelList[index].thumbnail}',
-                                      loadingBuilder:
-                                          (context, child, loadingProgress) {
-                                    if (loadingProgress == null) {
-                                      return SizedBox(
+                                      loadingBuilder: (context, child, loadingProgress) {
+                                        if (loadingProgress == null) {
+                                          return SizedBox(
+                                              width: 120,
+                                              height: 120,
+                                              child: child);
+                                        }
+                                        return SizedBox(
                                           width: 120,
                                           height: 120,
-                                          child: child);
-                                    };
-                                    return SizedBox(
-                                      width: 120,
-                                      height: 120,
-                                      child: CircularProgressIndicator(),
-                                    );
-                                  }),
+                                          child: CircularProgressIndicator(),
+                                        );
+                                      }),
                                 ),
-                                SizedBox(
-                                  width: 10,
-                                ),
+                                SizedBox(width: 10),
                                 Expanded(
                                     child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      '${provider.nowProductModelList[index].title}',
-                                      style: TextStyle(
-                                          fontSize: 20,
-                                          fontWeight: FontWeight.bold),
-                                      maxLines: 3,
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                    Row(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
                                         Text(
-                                          '${provider.nowProductModelList[index].price}',
+                                          '${provider.nowProductModelList[index].title}',
                                           style: TextStyle(
-                                              fontSize: 15,
+                                              fontSize: 20,
                                               fontWeight: FontWeight.bold),
-                                          maxLines: 1,
+                                          maxLines: 3,
                                           overflow: TextOverflow.ellipsis,
                                         ),
-                                        SizedBox(
-                                          width: 10,
-                                        ),
-                                        Text(
-                                          '${provider.nowProductModelList[index].tags?.first ?? ""}',
-                                          style: TextStyle(
-                                              fontSize: 15,
-                                              fontWeight: FontWeight.normal),
-                                          maxLines: 1,
-                                          overflow: TextOverflow.ellipsis,
+                                        Row(
+                                          children: [
+                                            Text(
+                                              '${provider.nowProductModelList[index].price}',
+                                              style: TextStyle(
+                                                  fontSize: 15,
+                                                  fontWeight: FontWeight.bold),
+                                              maxLines: 1,
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
+                                            SizedBox(width: 10),
+                                            Text(
+                                              '${provider.nowProductModelList[index].tags?.first ?? ""}',
+                                              style: TextStyle(
+                                                  fontSize: 15,
+                                                  fontWeight: FontWeight.normal),
+                                              maxLines: 1,
+                                              overflow: TextOverflow.ellipsis,
+                                            )
+                                          ],
                                         )
                                       ],
                                     )
-                                  ],
-                                )
                                 )
                               ],
                             )
                         );
                       }
-                      ),
-                ),
-              if (!provider.nowListShowTapped)
-                Expanded(
-                  child: GridView.builder(
+                  )
+                      : GridView.builder(
+                      key: ValueKey<bool>(false),
                       controller: _scrollController,
                       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2, mainAxisSpacing: 10, crossAxisSpacing: 10),
+                          crossAxisCount: 2,
+                          mainAxisSpacing: 10,
+                          crossAxisSpacing: 10
+                      ),
                       itemCount: provider.nowProductModelList.length,
-
                       itemBuilder: (context, index) {
                         return Container(
                           decoration: BoxDecoration(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(15)),
-                              border:
-                                  Border.all(color: Colors.black38, width: 1)),
+                              borderRadius: BorderRadius.all(Radius.circular(15)),
+                              border: Border.all(color: Colors.black38, width: 1)),
                           child: Stack(
                             alignment: Alignment.bottomCenter,
                             children: [
                               Image.network(
                                   '${provider.nowProductModelList[index].thumbnail}',
-                                  loadingBuilder:
-                                      (context, child, loadingProgress) {
+                                  loadingBuilder: (context, child, loadingProgress) {
                                     if (loadingProgress == null) {
                                       return child;
-                                    };
+                                    }
                                     return CircularProgressIndicator();
                                   }),
                               Container(
@@ -202,7 +205,10 @@ class _HomeWidgetState extends State<HomeWidget> {
                                 height: 60,
                                 decoration: BoxDecoration(
                                     color: Colors.black45,
-                                    borderRadius: BorderRadius.only(bottomLeft: Radius.circular(15), bottomRight: Radius.circular(15))
+                                    borderRadius: BorderRadius.only(
+                                        bottomLeft: Radius.circular(15),
+                                        bottomRight: Radius.circular(15)
+                                    )
                                 ),
                                 child: Column(
                                   mainAxisAlignment: MainAxisAlignment.end,
@@ -217,36 +223,36 @@ class _HomeWidgetState extends State<HomeWidget> {
                                       maxLines: 1,
                                       overflow: TextOverflow.ellipsis,
                                     ),
-                                    SizedBox(
-                                      width: 10,
-                                    ),
+                                    SizedBox(width: 10),
                                     Row(
                                       mainAxisAlignment: MainAxisAlignment.center,
                                       crossAxisAlignment: CrossAxisAlignment.center,
                                       children: [
-                                        Flexible(child: Text(
-                                          '${provider.nowProductModelList[index].price}',
-                                            textAlign: TextAlign.right,
-                                          style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 15,
-                                              fontWeight: FontWeight.bold),
-                                          maxLines: 1,
-                                          overflow: TextOverflow.ellipsis
-                                        ),
+                                        Flexible(
+                                          child: Text(
+                                              '${provider.nowProductModelList[index].price}',
+                                              textAlign: TextAlign.right,
+                                              style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 15,
+                                                  fontWeight: FontWeight.bold),
+                                              maxLines: 1,
+                                              overflow: TextOverflow.ellipsis
+                                          ),
                                         ),
                                         SizedBox(width: 5),
-                                        Flexible(child:  Text(
-                                         '${provider.nowProductModelList[index].tags?.first ?? ""}',
-                                         style: TextStyle(
-                                             color: Colors.white,
-                                             fontSize: 15,
-                                             fontWeight: FontWeight.normal,
-                                         ),
-                                         maxLines: 1,
-                                         overflow: TextOverflow.ellipsis,
-                                       ),
-                                       ),
+                                        Flexible(
+                                          child: Text(
+                                            '${provider.nowProductModelList[index].tags?.first ?? ""}',
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 15,
+                                              fontWeight: FontWeight.normal,
+                                            ),
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                        ),
                                       ],
                                     )
                                   ],
@@ -256,10 +262,12 @@ class _HomeWidgetState extends State<HomeWidget> {
                           ),
                         );
                       }
-                      ),
+                  ),
                 ),
+              ),
             ],
           ),
-        ));
+        )
+    );
   }
 }
