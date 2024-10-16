@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_product/Presentation/Detail/DetailWidget.dart';
 import 'package:flutter_product/Presentation/Home/HomeViewModel.dart';
 import 'package:provider/provider.dart';
 
@@ -40,7 +41,8 @@ class _HomeWidgetState extends State<HomeWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final provider = context.watch<HomeViewModel>();
+    final _provider = context.watch<HomeViewModel>();
+
     return Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.white,
@@ -57,7 +59,7 @@ class _HomeWidgetState extends State<HomeWidget> {
                   Expanded(
                     child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                            backgroundColor: provider.nowListShowTapped
+                            backgroundColor: _provider.nowListShowTapped
                                 ? Colors.black
                                 : Colors.black26),
                         onPressed: () {
@@ -72,7 +74,7 @@ class _HomeWidgetState extends State<HomeWidget> {
                   Expanded(
                     child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                            backgroundColor: !provider.nowListShowTapped
+                            backgroundColor: !_provider.nowListShowTapped
                                 ? Colors.black
                                 : Colors.black26),
                         onPressed: () {
@@ -86,7 +88,7 @@ class _HomeWidgetState extends State<HomeWidget> {
                 ],
               ),
               SizedBox(height: 30),
-              if (provider.nowProductModelList.isEmpty)
+              if (_provider.nowProductModelList.isEmpty)
                 SizedBox(
                   width: 100,
                   height: 100,
@@ -107,76 +109,81 @@ class _HomeWidgetState extends State<HomeWidget> {
                       ),
                     );
                   },
-                  child: provider.nowListShowTapped
+                  child: _provider.nowListShowTapped
                       ? ListView.builder(
                       key: ValueKey<bool>(true),
                       controller: _scrollController,
-                      itemCount: provider.nowProductModelList.length,
+                      itemCount: _provider.nowProductModelList.length,
                       itemBuilder: (context, index) {
-                        return Container(
-                            padding: EdgeInsets.only(top: 10, bottom: 10),
-                            child: Row(
-                              children: [
-                                Container(
-                                  height: 120,
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.all(Radius.circular(15)),
-                                      border: Border.all(color: Colors.black38, width: 1)),
-                                  child: Image.network(
-                                      '${provider.nowProductModelList[index].thumbnail}',
-                                      loadingBuilder: (context, child, loadingProgress) {
-                                        if (loadingProgress == null) {
+                        return GestureDetector(
+                          onTap: () {
+                            Navigator.of(context).pushNamed(DetailWidget.detailWidgetRoutename, arguments: _provider.nowProductModelList[index]);
+                          },
+                          child: Container(
+                              padding: EdgeInsets.only(top: 10, bottom: 10),
+                              child: Row(
+                                children: [
+                                  Container(
+                                    height: 120,
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.all(Radius.circular(15)),
+                                        border: Border.all(color: Colors.black38, width: 1)),
+                                    child: Image.network(
+                                        '${_provider.nowProductModelList[index].thumbnail}',
+                                        loadingBuilder: (context, child, loadingProgress) {
+                                          if (loadingProgress == null) {
+                                            return SizedBox(
+                                                width: 120,
+                                                height: 120,
+                                                child: child);
+                                          }
                                           return SizedBox(
-                                              width: 120,
-                                              height: 120,
-                                              child: child);
-                                        }
-                                        return SizedBox(
-                                          width: 120,
-                                          height: 120,
-                                          child: CircularProgressIndicator(),
-                                        );
-                                      }),
-                                ),
-                                SizedBox(width: 10),
-                                Expanded(
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          '${provider.nowProductModelList[index].title}',
-                                          style: TextStyle(
-                                              fontSize: 20,
-                                              fontWeight: FontWeight.bold),
-                                          maxLines: 3,
-                                          overflow: TextOverflow.ellipsis,
-                                        ),
-                                        Row(
-                                          children: [
-                                            Text(
-                                              '${provider.nowProductModelList[index].price}',
-                                              style: TextStyle(
-                                                  fontSize: 15,
-                                                  fontWeight: FontWeight.bold),
-                                              maxLines: 1,
-                                              overflow: TextOverflow.ellipsis,
-                                            ),
-                                            SizedBox(width: 10),
-                                            Text(
-                                              '${provider.nowProductModelList[index].tags?.first ?? ""}',
-                                              style: TextStyle(
-                                                  fontSize: 15,
-                                                  fontWeight: FontWeight.normal),
-                                              maxLines: 1,
-                                              overflow: TextOverflow.ellipsis,
-                                            )
-                                          ],
-                                        )
-                                      ],
-                                    )
-                                )
-                              ],
-                            )
+                                            width: 120,
+                                            height: 120,
+                                            child: CircularProgressIndicator(),
+                                          );
+                                        }),
+                                  ),
+                                  SizedBox(width: 10),
+                                  Expanded(
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            '${_provider.nowProductModelList[index].title}',
+                                            style: TextStyle(
+                                                fontSize: 20,
+                                                fontWeight: FontWeight.bold),
+                                            maxLines: 3,
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                          Row(
+                                            children: [
+                                              Text(
+                                                '${_provider.nowProductModelList[index].price}',
+                                                style: TextStyle(
+                                                    fontSize: 15,
+                                                    fontWeight: FontWeight.bold),
+                                                maxLines: 1,
+                                                overflow: TextOverflow.ellipsis,
+                                              ),
+                                              SizedBox(width: 10),
+                                              Text(
+                                                '${_provider.nowProductModelList[index].tags?.first ?? ""}',
+                                                style: TextStyle(
+                                                    fontSize: 15,
+                                                    fontWeight: FontWeight.normal),
+                                                maxLines: 1,
+                                                overflow: TextOverflow.ellipsis,
+                                              )
+                                            ],
+                                          )
+                                        ],
+                                      )
+                                  )
+                                ],
+                              )
+                          )
                         );
                       }
                   )
@@ -188,7 +195,7 @@ class _HomeWidgetState extends State<HomeWidget> {
                           mainAxisSpacing: 10,
                           crossAxisSpacing: 10
                       ),
-                      itemCount: provider.nowProductModelList.length,
+                      itemCount: _provider.nowProductModelList.length,
                       itemBuilder: (context, index) {
                         return Container(
                           decoration: BoxDecoration(
@@ -198,7 +205,7 @@ class _HomeWidgetState extends State<HomeWidget> {
                             alignment: Alignment.bottomCenter,
                             children: [
                               Image.network(
-                                  '${provider.nowProductModelList[index].thumbnail}',
+                                  '${_provider.nowProductModelList[index].thumbnail}',
                                   loadingBuilder: (context, child, loadingProgress) {
                                     if (loadingProgress == null) {
                                       return child;
@@ -219,7 +226,7 @@ class _HomeWidgetState extends State<HomeWidget> {
                                   mainAxisAlignment: MainAxisAlignment.end,
                                   children: [
                                     Text(
-                                      '${provider.nowProductModelList[index].title}',
+                                      '${_provider.nowProductModelList[index].title}',
                                       style: TextStyle(
                                           color: Colors.white,
                                           fontSize: 17,
@@ -235,7 +242,7 @@ class _HomeWidgetState extends State<HomeWidget> {
                                       children: [
                                         Flexible(
                                           child: Text(
-                                              '${provider.nowProductModelList[index].price}',
+                                              '${_provider.nowProductModelList[index].price}',
                                               textAlign: TextAlign.right,
                                               style: TextStyle(
                                                   color: Colors.white,
@@ -248,7 +255,7 @@ class _HomeWidgetState extends State<HomeWidget> {
                                         SizedBox(width: 5),
                                         Flexible(
                                           child: Text(
-                                            '${provider.nowProductModelList[index].tags?.first ?? ""}',
+                                            '${_provider.nowProductModelList[index].tags?.first ?? ""}',
                                             style: TextStyle(
                                               color: Colors.white,
                                               fontSize: 15,

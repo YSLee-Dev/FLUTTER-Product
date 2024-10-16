@@ -5,7 +5,7 @@ import 'package:flutter_product/Component/Model/ProductModel.dart';
 import 'package:flutter_product/Component/Network/INetworkManager.dart';
 
 class DetailViewModel with ChangeNotifier  {
-  final ProductModel _sendedDetailInfo;
+  final ProductModel sendedDetailInfo;
 
-  DetailViewModel(this._sendedDetailInfo);
+  DetailViewModel({required ProductModel model }) : sendedDetailInfo = model;
 }
