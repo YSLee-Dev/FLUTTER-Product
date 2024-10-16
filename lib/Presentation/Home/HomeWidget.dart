@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_product/Presentation/HomeViewModel.dart';
+import 'package:flutter_product/Presentation/Home/HomeViewModel.dart';
 import 'package:provider/provider.dart';
 
 class HomeWidget extends StatefulWidget {

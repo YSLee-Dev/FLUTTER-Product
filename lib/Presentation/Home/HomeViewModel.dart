@@ -1,10 +1,10 @@
 import 'package:flutter/foundation.dart';
-import 'package:flutter_product/Dependency/IProductManager.dart';
-import 'package:flutter_product/Dependency/ProductManager.dart';
-import 'package:flutter_product/Model/ProductModel.dart';
-import 'package:flutter_product/Network/INetworkManager.dart';
+import 'package:flutter_product/Component/Dependency/IProductManager.dart';
+import 'package:flutter_product/Component/Dependency/ProductManager.dart';
+import 'package:flutter_product/Component/Model/ProductModel.dart';
+import 'package:flutter_product/Component/Network/INetworkManager.dart';
 import 'package:provider/provider.dart';
-import '../Network/NetworkManager.dart';
+import '../../Component/Network/NetworkManager.dart';
 
 class HomeViewModel with ChangeNotifier {
   bool nowListShowTapped = true;

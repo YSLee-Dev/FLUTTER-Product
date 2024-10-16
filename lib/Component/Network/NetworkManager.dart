@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'package:flutter_product/Network/INetworkManager.dart';
+import 'package:flutter_product/Component/Network/INetworkManager.dart';
 import 'package:http/http.dart' as http;
 
 
