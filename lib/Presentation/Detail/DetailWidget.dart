@@ -42,56 +42,66 @@ class _DetailWidgetState extends State<DetailWidget> {
     final _provider = context.watch<DetailViewModel>();
 
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        scrolledUnderElevation: 0,
-        title: Text("Detail"),
-      ),
-      body: Container(
-        padding: EdgeInsets.only(left: 20, right: 20),
-        color: Colors.white,
-        child: ListView(
-          children: [
-            SizedBox(
-              height: 200,
-              child: Stack(
-                alignment: Alignment.center,
+      backgroundColor: Colors.white,
+      body: SafeArea(
+          child: Container(
+              padding: EdgeInsets.only(left: 20, right: 20, top: 10),
+              color: Colors.white,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  PageView.builder(
-                      scrollDirection: Axis.horizontal,
-                      itemCount: _provider.sendedDetailInfo.images?.length ?? 0,
-                      controller: _pageController,
-                      itemBuilder: (context, index) {
-                        double screenWidth = MediaQuery.of(context).size.width;
-                        return Stack(
-                            alignment: Alignment.center,
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.pop(context);
+                    },
+                    child: Text("← Product Detail", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25),)
+                  ),
+                  Expanded(child: ListView(
+                    children: [
+                      SizedBox(
+                          height: 200,
+                          child: Stack(
+                            alignment: Alignment.bottomCenter,
                             children: [
-                              Image.network(
-                                  _provider.sendedDetailInfo.images![index], width: screenWidth, height: 200,
-                                  loadingBuilder: (context, child, loadingProgress) {
-                                    if(loadingProgress == null) {return child;}
-                                    return CircularProgressIndicator();
+                              PageView.builder(
+                                  scrollDirection: Axis.horizontal,
+                                  itemCount: _provider.sendedDetailInfo.images?.length ?? 0,
+                                  controller: _pageController,
+                                  itemBuilder: (context, index) {
+                                    double screenWidth = MediaQuery.of(context).size.width;
+                                    return Stack(
+                                        alignment: Alignment.center,
+                                        children: [
+                                          Image.network(
+                                              _provider.sendedDetailInfo.images![index], width: screenWidth, height: 200,
+                                              loadingBuilder: (context, child, loadingProgress) {
+                                                if(loadingProgress == null) {return child;}
+                                                return CircularProgressIndicator();
+                                              }
+                                          ),
+                                        ]
+                                    );
                                   }
                               ),
-                            ]
-                        );
-                      }
-                  ),
-                  if (!imageWidgetLeftArrowisHideen)
-                    Container(
-                      alignment: Alignment.centerLeft,
-                      child: Text("◀", style: TextStyle(fontSize: 40, fontWeight: FontWeight.w600, color: Colors.black87),),
-                    ),
-                  if (!imageWidgetRightArrowisHideen)
-                    Container(
-                      alignment: Alignment.centerRight,
-                      child: Text("▶", style: TextStyle(fontSize: 40, fontWeight: FontWeight.w600, color: Colors.black87)),
-                    )
+                              if (!imageWidgetLeftArrowisHideen)
+                                Container(
+                                  alignment: Alignment.centerLeft,
+                                  child: Text("◀", style: TextStyle(fontSize: 25, fontWeight: FontWeight.w600, color: Colors.black87),),
+                                ),
+                              if (!imageWidgetRightArrowisHideen)
+                                Container(
+                                  alignment: Alignment.centerRight,
+                                  child: Text("▶", style: TextStyle(fontSize: 25, fontWeight: FontWeight.w600, color: Colors.black87)),
+                                )
+                            ],
+                          )
+                      )
+                    ],
+                  )
+                  )
                 ],
               )
-            )
-          ],
-        )
+          )
       )
     );
   }
