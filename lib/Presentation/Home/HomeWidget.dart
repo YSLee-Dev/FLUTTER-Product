@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_product/Component/CommonWidget/CommonMainWidget.dart';
 import 'package:flutter_product/Presentation/Detail/DetailWidget.dart';
 import 'package:flutter_product/Presentation/Home/HomeViewModel.dart';
 import 'package:provider/provider.dart';
@@ -43,79 +44,74 @@ class _HomeWidgetState extends State<HomeWidget> {
   Widget build(BuildContext context) {
     final _provider = context.watch<HomeViewModel>();
 
-    return Scaffold(
-        appBar: AppBar(
-          backgroundColor: Colors.white,
-          scrolledUnderElevation: 0,
-          title: Text("Home"),
-        ),
-        body: Container(
-          color: Colors.white,
-          padding: EdgeInsets.only(left: 20, right: 20),
-          child: Column(
-            children: [
-              Row(
-                children: [
-                  Expanded(
-                    child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                            backgroundColor: _provider.nowListShowTapped
-                                ? Colors.black
-                                : Colors.black26),
-                        onPressed: () {
-                          _viewCategoryBtnTapped(isList: true);
-                        },
-                        child: Text(
-                          "리스트 보기",
-                          style: TextStyle(color: Colors.white),
-                        )),
-                  ),
-                  SizedBox(width: 20),
-                  Expanded(
-                    child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                            backgroundColor: !_provider.nowListShowTapped
-                                ? Colors.black
-                                : Colors.black26),
-                        onPressed: () {
-                          _viewCategoryBtnTapped(isList: false);
-                        },
-                        child: Text(
-                          "격자 보기",
-                          style: TextStyle(color: Colors.white),
-                        )),
-                  ),
-                ],
-              ),
-              SizedBox(height: 30),
-              if (_provider.nowProductModelList.isEmpty)
-                SizedBox(
-                  width: 100,
-                  height: 100,
-                  child: CircularProgressIndicator(),
+    return CommonMainWidget(
+        title: "Home",
+        isBackIconShow: false,
+        widget: Column(
+          children: [
+            SizedBox(height: 20,),
+            Row(
+              children: [
+                Expanded(
+                  child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                          backgroundColor: _provider.nowListShowTapped
+                              ? Colors.black
+                              : Colors.black26),
+                      onPressed: () {
+                        _viewCategoryBtnTapped(isList: true);
+                      },
+                      child: Text(
+                        "리스트 보기",
+                        style: TextStyle(color: Colors.white),
+                      )),
                 ),
-              Expanded(
-                child: AnimatedSwitcher(
-                  duration: Duration(milliseconds: 250),
-                  transitionBuilder: (Widget child, Animation<double> animation) {
-                    return SlideTransition(
-                      position: Tween<Offset>(
-                        begin: Offset(_provider.nowListShowTapped ? 0.2 : -0.2, 0.0),
-                        end: Offset(0.0, 0.0),
-                      ).animate(animation),
-                      child: FadeTransition(
-                        opacity: animation,
-                        child: child,
-                      ),
-                    );
-                  },
-                  child: _provider.nowListShowTapped
-                      ? ListView.builder(
-                      key: ValueKey<bool>(true),
-                      controller: _scrollController,
-                      itemCount: _provider.nowProductModelList.length,
-                      itemBuilder: (context, index) {
-                        return GestureDetector(
+                SizedBox(width: 20),
+                Expanded(
+                  child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                          backgroundColor: !_provider.nowListShowTapped
+                              ? Colors.black
+                              : Colors.black26),
+                      onPressed: () {
+                        _viewCategoryBtnTapped(isList: false);
+                      },
+                      child: Text(
+                        "격자 보기",
+                        style: TextStyle(color: Colors.white),
+                      )),
+                ),
+              ],
+            ),
+            SizedBox(height: 30),
+            if (_provider.nowProductModelList.isEmpty)
+              SizedBox(
+                width: 100,
+                height: 100,
+                child: CircularProgressIndicator(),
+              ),
+            Expanded(
+              child: AnimatedSwitcher(
+                duration: Duration(milliseconds: 250),
+                transitionBuilder: (Widget child, Animation<double> animation) {
+                  return SlideTransition(
+                    position: Tween<Offset>(
+                      begin: Offset(_provider.nowListShowTapped ? 0.2 : -0.2, 0.0),
+                      end: Offset(0.0, 0.0),
+                    ).animate(animation),
+                    child: FadeTransition(
+                      opacity: animation,
+                      child: child,
+                    ),
+                  );
+                },
+                child: _provider.nowListShowTapped
+                    ? ListView.builder(
+                    key: ValueKey<bool>(true),
+                    controller: _scrollController,
+                    itemCount: _provider.nowProductModelList.length,
+                    itemBuilder: (context, index) {
+                      return GestureDetector(
                           onTap: () {
                             Navigator.of(context).pushNamed(DetailWidget.detailWidgetRoutename, arguments: _provider.nowProductModelList[index]);
                           },
@@ -184,102 +180,101 @@ class _HomeWidgetState extends State<HomeWidget> {
                                 ],
                               )
                           )
-                        );
-                      }
-                  )
-                      : GridView.builder(
-                      key: ValueKey<bool>(false),
-                      controller: _scrollController,
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2,
-                          mainAxisSpacing: 10,
-                          crossAxisSpacing: 10
-                      ),
-                      itemCount: _provider.nowProductModelList.length,
-                      itemBuilder: (context, index) {
-                        return Container(
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.all(Radius.circular(15)),
-                              border: Border.all(color: Colors.black38, width: 1)),
-                          child: Stack(
-                            alignment: Alignment.bottomCenter,
-                            children: [
-                              Image.network(
-                                  '${_provider.nowProductModelList[index].thumbnail}',
-                                  loadingBuilder: (context, child, loadingProgress) {
-                                    if (loadingProgress == null) {
-                                      return child;
-                                    }
-                                    return CircularProgressIndicator();
-                                  }),
-                              Container(
-                                padding: EdgeInsets.all(5),
-                                height: 60,
-                                decoration: BoxDecoration(
-                                    color: Colors.black45,
-                                    borderRadius: BorderRadius.only(
-                                        bottomLeft: Radius.circular(15),
-                                        bottomRight: Radius.circular(15)
-                                    )
-                                ),
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: [
-                                    Text(
-                                      '${_provider.nowProductModelList[index].title}',
-                                      style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 17,
-                                          fontWeight: FontWeight.bold
-                                      ),
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
+                      );
+                    }
+                )
+                    : GridView.builder(
+                    key: ValueKey<bool>(false),
+                    controller: _scrollController,
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        mainAxisSpacing: 10,
+                        crossAxisSpacing: 10
+                    ),
+                    itemCount: _provider.nowProductModelList.length,
+                    itemBuilder: (context, index) {
+                      return Container(
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.all(Radius.circular(15)),
+                            border: Border.all(color: Colors.black38, width: 1)),
+                        child: Stack(
+                          alignment: Alignment.bottomCenter,
+                          children: [
+                            Image.network(
+                                '${_provider.nowProductModelList[index].thumbnail}',
+                                loadingBuilder: (context, child, loadingProgress) {
+                                  if (loadingProgress == null) {
+                                    return child;
+                                  }
+                                  return CircularProgressIndicator();
+                                }),
+                            Container(
+                              padding: EdgeInsets.all(5),
+                              height: 60,
+                              decoration: BoxDecoration(
+                                  color: Colors.black45,
+                                  borderRadius: BorderRadius.only(
+                                      bottomLeft: Radius.circular(15),
+                                      bottomRight: Radius.circular(15)
+                                  )
+                              ),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  Text(
+                                    '${_provider.nowProductModelList[index].title}',
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 17,
+                                        fontWeight: FontWeight.bold
                                     ),
-                                    SizedBox(width: 10),
-                                    Row(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      crossAxisAlignment: CrossAxisAlignment.center,
-                                      children: [
-                                        Flexible(
-                                          child: Text(
-                                              '${_provider.nowProductModelList[index].price}',
-                                              textAlign: TextAlign.right,
-                                              style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontSize: 15,
-                                                  fontWeight: FontWeight.bold),
-                                              maxLines: 1,
-                                              overflow: TextOverflow.ellipsis
-                                          ),
-                                        ),
-                                        SizedBox(width: 5),
-                                        Flexible(
-                                          child: Text(
-                                            '${_provider.nowProductModelList[index].tags?.first ?? ""}',
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                  SizedBox(width: 10),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    children: [
+                                      Flexible(
+                                        child: Text(
+                                            '${_provider.nowProductModelList[index].price}',
+                                            textAlign: TextAlign.right,
                                             style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 15,
-                                              fontWeight: FontWeight.normal,
-                                            ),
+                                                color: Colors.white,
+                                                fontSize: 15,
+                                                fontWeight: FontWeight.bold),
                                             maxLines: 1,
-                                            overflow: TextOverflow.ellipsis,
-                                          ),
+                                            overflow: TextOverflow.ellipsis
                                         ),
-                                      ],
-                                    )
-                                  ],
-                                ),
-                              )
-                            ],
-                          ),
-                        );
-                      }
-                  ),
+                                      ),
+                                      SizedBox(width: 5),
+                                      Flexible(
+                                        child: Text(
+                                          '${_provider.nowProductModelList[index].tags?.first ?? ""}',
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 15,
+                                            fontWeight: FontWeight.normal,
+                                          ),
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      ),
+                                    ],
+                                  )
+                                ],
+                              ),
+                            )
+                          ],
+                        ),
+                      );
+                    }
                 ),
               ),
-            ],
-          ),
-        )
+            ),
+          ],
+        ),
     );
   }
 }

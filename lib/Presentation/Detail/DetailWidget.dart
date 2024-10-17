@@ -51,7 +51,7 @@ class _DetailWidgetState extends State<DetailWidget> {
           action: () {
             Navigator.pop(context);
           },
-          widget: Expanded(child: ListView(
+          widget: ListView(
             children: [
               SizedBox(
                   height: 200,
@@ -92,7 +92,6 @@ class _DetailWidgetState extends State<DetailWidget> {
                   )
               )
             ],
-          )
           )
       )
     );
