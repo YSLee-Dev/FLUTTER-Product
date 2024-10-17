@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_product/Component/CommonWidget/CommonMainWidget.dart';
 import 'package:flutter_product/Presentation/Detail/DetailViewModel.dart';
@@ -14,8 +16,11 @@ class DetailWidget extends StatefulWidget {
 
 class _DetailWidgetState extends State<DetailWidget> {
   late final PageController _pageController;
-  bool imageWidgetLeftArrowisHideen = true;
-  bool imageWidgetRightArrowisHideen = false;
+  late double _screenWidth = MediaQuery.of(context).size.width;
+
+  bool _imageWidgetLeftArrowisHideen = true;
+  bool _imageWidgetRightArrowisHideen = false;
+  int _nowPage = 0;
 
   @override
   void initState() {
@@ -25,8 +30,9 @@ class _DetailWidgetState extends State<DetailWidget> {
     _pageController.addListener (() {
       if ((_pageController.page ?? 0.1) % 1.0 == 0.0) {
         setState(() {
-          imageWidgetLeftArrowisHideen = _pageController.page == 0.0;
-          imageWidgetRightArrowisHideen = _pageController.offset >= _pageController.position.maxScrollExtent;
+          _nowPage = _pageController.page!.toInt();
+          _imageWidgetLeftArrowisHideen = _pageController.page == 0.0;
+          _imageWidgetRightArrowisHideen = _pageController.offset >= _pageController.position.maxScrollExtent;
         });
       }
     });
@@ -37,7 +43,6 @@ class _DetailWidgetState extends State<DetailWidget> {
     _pageController.dispose();
     super.dispose();
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -63,12 +68,11 @@ class _DetailWidgetState extends State<DetailWidget> {
                           itemCount: _provider.sendedDetailInfo.images?.length ?? 0,
                           controller: _pageController,
                           itemBuilder: (context, index) {
-                            double screenWidth = MediaQuery.of(context).size.width;
                             return Stack(
                                 alignment: Alignment.center,
                                 children: [
                                   Image.network(
-                                      _provider.sendedDetailInfo.images![index], width: screenWidth, height: 200,
+                                      _provider.sendedDetailInfo.images![index], width: _screenWidth, height: 200,
                                       loadingBuilder: (context, child, loadingProgress) {
                                         if(loadingProgress == null) {return child;}
                                         return CircularProgressIndicator();
@@ -78,18 +82,34 @@ class _DetailWidgetState extends State<DetailWidget> {
                             );
                           }
                       ),
-                      if (!imageWidgetLeftArrowisHideen)
+                      if (!_imageWidgetLeftArrowisHideen)
                         Container(
                           alignment: Alignment.centerLeft,
                           child: Text("◀", style: TextStyle(fontSize: 25, fontWeight: FontWeight.w600, color: Colors.black87),),
                         ),
-                      if (!imageWidgetRightArrowisHideen)
+                      if (!_imageWidgetRightArrowisHideen)
                         Container(
                           alignment: Alignment.centerRight,
                           child: Text("▶", style: TextStyle(fontSize: 25, fontWeight: FontWeight.w600, color: Colors.black87)),
                         )
                     ],
                   )
+              ),
+              SizedBox(height: 5,),
+              Stack(
+                alignment: Alignment.centerLeft,
+                children: [
+                  Container(
+                    decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(15)), color: Colors.black12),
+                    width: _screenWidth,
+                    height: 20,
+                  ),
+                  Container(
+                    decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(15)), color: Colors.black87),
+                    width: _screenWidth - (_screenWidth / ((_provider.sendedDetailInfo.images?.length ?? 1) - 1) * (((_provider.sendedDetailInfo.images?.length ?? 1) - 1) - _nowPage)),
+                    height: 20,
+                  )
+                ],
               )
             ],
           )
