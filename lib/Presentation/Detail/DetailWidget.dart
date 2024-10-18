@@ -136,14 +136,14 @@ class _DetailWidgetState extends State<DetailWidget> {
                 children: [
                   Text('${_provider.sendedDetailInfo.brand ?? 'Depends on destination'}', style: TextStyle(fontSize: 16)),
                   SizedBox(height: 15,),
-                  Text("${((_provider.sendedDetailInfo.price ?? 0.0) / ((100 - (_provider.sendedDetailInfo.discountPercentage ?? 0.0)) / 100)).toStringAsFixed(2)}",
+                  Text("${((_provider.sendedDetailInfo.price ?? 0.0) / ((100 - (_provider.sendedDetailInfo.discountPercentage ?? 0.0)) / 100)).toStringAsFixed(2)}\$",
                     style: TextStyle(decoration: TextDecoration.lineThrough, fontSize: 17),
                   ),
                   Row(
                     children: [
                       Text('${_provider.sendedDetailInfo.discountPercentage}%', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 23, color: Colors.redAccent,)),
                       SizedBox(width: 10,),
-                      Text('${_provider.sendedDetailInfo.price}\$ ' , style: TextStyle(fontWeight: FontWeight.bold, fontSize: 23),)
+                      Text('${_provider.sendedDetailInfo.price}\$ ' , style: TextStyle(fontWeight: FontWeight.bold, fontSize: 23),),
                     ],
                   )
                 ],
@@ -177,6 +177,14 @@ class _DetailWidgetState extends State<DetailWidget> {
                       );
                     }
                 )
+              ),
+              SizedBox(height: 20,),
+              Text("Product description", style: TextStyle(fontSize: 21, fontWeight: FontWeight.bold),),
+              SizedBox(height: 5,),
+              Container(
+                padding: EdgeInsets.all(20),
+                decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(15)), border: Border.all(color: Colors.black45, width: 1)),
+                child: Text("${_provider.sendedDetailInfo.description}", style: TextStyle(fontSize: 15),),
               )
             ],
           )
