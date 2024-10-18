@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -15,8 +16,11 @@ class DetailWidget extends StatefulWidget {
 }
 
 class _DetailWidgetState extends State<DetailWidget> {
-  late final PageController _pageController;
+  late final PageController _imagePageController;
+  late final PageController _reviewsPageController;
   late double _screenWidth = MediaQuery.of(context).size.width;
+  late final _provider = context.read<DetailViewModel>();
+  late final StreamSubscription<int>? _indexStream;
 
   bool _imageWidgetLeftArrowisHideen = true;
   bool _imageWidgetRightArrowisHideen = false;
@@ -25,29 +29,33 @@ class _DetailWidgetState extends State<DetailWidget> {
   @override
   void initState() {
     super.initState();
-
-    _pageController = PageController();
-    _pageController.addListener (() {
-      if ((_pageController.page ?? 0.1) % 1.0 == 0.0) {
+    _imagePageController = PageController();
+    _imagePageController.addListener (() {
+      if ((_imagePageController.page ?? 0.1) % 1.0 == 0.0) {
         setState(() {
-          _nowPage = _pageController.page!.toInt();
-          _imageWidgetLeftArrowisHideen = _pageController.page == 0.0;
-          _imageWidgetRightArrowisHideen = _pageController.offset >= _pageController.position.maxScrollExtent;
+          _nowPage = _imagePageController.page!.toInt();
+          _imageWidgetLeftArrowisHideen = _imagePageController.page == 0.0;
+          _imageWidgetRightArrowisHideen = _imagePageController.offset >= _imagePageController.position.maxScrollExtent;
         });
       }
+    });
+
+    _reviewsPageController = PageController();
+    _indexStream =_provider.reviewIndexTimer().listen((index) {
+      _reviewsPageController.animateTo(index * 55, duration: Duration(milliseconds: 500), curve: Curves.easeInOutCirc);
     });
   }
 
   @override
   void dispose() {
-    _pageController.dispose();
+    _imagePageController.dispose();
+    _reviewsPageController.dispose();
+    _indexStream?.cancel();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final _provider = context.read<DetailViewModel>();
-
     return Scaffold(
       backgroundColor: Colors.white,
       body: CommonMainWidget(
@@ -66,7 +74,7 @@ class _DetailWidgetState extends State<DetailWidget> {
                       PageView.builder(
                           scrollDirection: Axis.horizontal,
                           itemCount: _provider.sendedDetailInfo.images?.length ?? 0,
-                          controller: _pageController,
+                          controller: _imagePageController,
                           itemBuilder: (context, index) {
                             return Stack(
                                 alignment: Alignment.center,
@@ -147,8 +155,12 @@ class _DetailWidgetState extends State<DetailWidget> {
                 decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(15)), border: Border.all(color: Colors.black45, width: 1)),
                 height: 60,
                 child: PageView.builder(
+                    controller: _reviewsPageController,
                     scrollDirection: Axis.vertical,
                     itemCount: _provider.sendedDetailInfo.reviews?.length ?? 0,
+                    onPageChanged: (index) {
+                        _provider.nowShowingReviewIndexChnage(index);
+                    },
                     itemBuilder: (context, index) {
                       return Container(
                         width: _screenWidth,
