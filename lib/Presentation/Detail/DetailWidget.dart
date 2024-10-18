@@ -131,11 +131,32 @@ class _DetailWidgetState extends State<DetailWidget> {
                   Text("${_provider.sendedDetailInfo.title}", style: TextStyle(fontSize: 21, fontWeight: FontWeight.bold), maxLines: 2, overflow: TextOverflow.ellipsis)
                 ],
               ),
+              Text('${_provider.sendedDetailInfo.brand ?? 'Depends on destination'}', style: TextStyle(fontSize: 16)),
+              SizedBox(height: 20,),
+              Container(
+                height: 30,
+                child: ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: _provider.sendedDetailInfo.tags?.length ?? 0,
+                    itemBuilder: (builder, index) {
+                      return Row(
+                        children: [
+                          Container(
+                              decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(15)), color: Colors.black45),
+                              alignment: Alignment.center,
+                              padding: EdgeInsets.only(left: 15, right: 15),
+                              child: Text("${_provider.sendedDetailInfo.tags![index]}", style: TextStyle(fontSize: 14, color: Colors.white))
+                          ),
+                          SizedBox(width: 10,)
+                        ],
+                      );
+                    }
+                ),
+              ),
+              SizedBox(height: 20),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('${_provider.sendedDetailInfo.brand ?? 'Depends on destination'}', style: TextStyle(fontSize: 16)),
-                  SizedBox(height: 15,),
                   Text("${((_provider.sendedDetailInfo.price ?? 0.0) / ((100 - (_provider.sendedDetailInfo.discountPercentage ?? 0.0)) / 100)).toStringAsFixed(2)}\$",
                     style: TextStyle(decoration: TextDecoration.lineThrough, fontSize: 17),
                   ),
@@ -164,7 +185,7 @@ class _DetailWidgetState extends State<DetailWidget> {
                     itemBuilder: (context, index) {
                       return Container(
                         width: _screenWidth,
-                        padding: EdgeInsets.only(left: 10, right: 10),
+                        padding: EdgeInsets.only(left: 15, right: 15),
                         height: 60,
                         child: Row(
                           children: [
@@ -182,7 +203,7 @@ class _DetailWidgetState extends State<DetailWidget> {
               Text("Product description", style: TextStyle(fontSize: 21, fontWeight: FontWeight.bold),),
               SizedBox(height: 5,),
               Container(
-                padding: EdgeInsets.all(20),
+                padding: EdgeInsets.all(15),
                 decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(15)), border: Border.all(color: Colors.black45, width: 1)),
                 child: Text("${_provider.sendedDetailInfo.description}", style: TextStyle(fontSize: 15),),
               )
