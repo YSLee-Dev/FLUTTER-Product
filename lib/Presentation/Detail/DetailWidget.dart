@@ -46,7 +46,7 @@ class _DetailWidgetState extends State<DetailWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final _provider = context.watch<DetailViewModel>();
+    final _provider = context.read<DetailViewModel>();
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -111,7 +111,7 @@ class _DetailWidgetState extends State<DetailWidget> {
                   )
                 ],
               ),
-              SizedBox(height: 30,),
+              SizedBox(height: 20,),
               Stack(
                 alignment: Alignment.centerLeft,
                 children: [
@@ -120,24 +120,51 @@ class _DetailWidgetState extends State<DetailWidget> {
                     width: 100,
                     height: 50,
                   ),
-                  Text("${_provider.sendedDetailInfo.title}", style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold), maxLines: 2, overflow: TextOverflow.ellipsis)
+                  Text("${_provider.sendedDetailInfo.title}", style: TextStyle(fontSize: 21, fontWeight: FontWeight.bold), maxLines: 2, overflow: TextOverflow.ellipsis)
                 ],
               ),
-              SizedBox(height: 10,),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  Text('${_provider.sendedDetailInfo.brand ?? 'Depends on destination'}', style: TextStyle(fontSize: 16)),
+                  SizedBox(height: 15,),
                   Text("${((_provider.sendedDetailInfo.price ?? 0.0) / ((100 - (_provider.sendedDetailInfo.discountPercentage ?? 0.0)) / 100)).toStringAsFixed(2)}",
-                    style: TextStyle(decoration: TextDecoration.lineThrough, fontSize: 18),
+                    style: TextStyle(decoration: TextDecoration.lineThrough, fontSize: 17),
                   ),
                   Row(
                     children: [
-                      Text('${_provider.sendedDetailInfo.discountPercentage}%', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25, color: Colors.redAccent,)),
+                      Text('${_provider.sendedDetailInfo.discountPercentage}%', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 23, color: Colors.redAccent,)),
                       SizedBox(width: 10,),
-                      Text('${_provider.sendedDetailInfo.price}\$ ' , style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25),)
+                      Text('${_provider.sendedDetailInfo.price}\$ ' , style: TextStyle(fontWeight: FontWeight.bold, fontSize: 23),)
                     ],
                   )
                 ],
+              ),
+              SizedBox(height: 20,),
+              Text("Reviews →", style: TextStyle(fontSize: 21, fontWeight: FontWeight.bold),),
+              SizedBox(height: 5,),
+              Container(
+                decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(15)), border: Border.all(color: Colors.black45, width: 1)),
+                height: 60,
+                child: PageView.builder(
+                    scrollDirection: Axis.vertical,
+                    itemCount: _provider.sendedDetailInfo.reviews?.length ?? 0,
+                    itemBuilder: (context, index) {
+                      return Container(
+                        width: _screenWidth,
+                        padding: EdgeInsets.only(left: 10, right: 10),
+                        height: 60,
+                        child: Row(
+                          children: [
+                            Text('🧑🏻 ', style: TextStyle(fontSize: 20),),
+                            Text('${_provider.sendedDetailInfo.reviews![index].name}', style: TextStyle(fontSize: 15),),
+                            SizedBox(width: 10),
+                            Text('${_provider.sendedDetailInfo.reviews![index].comment}', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),)
+                          ],
+                        ),
+                      );
+                    }
+                )
               )
             ],
           )
