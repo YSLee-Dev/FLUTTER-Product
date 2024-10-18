@@ -106,11 +106,13 @@ class _DetailWidgetState extends State<DetailWidget> {
                   ),
                   Container(
                     decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(15)), color: Colors.black87),
-                    width: _screenWidth - (_screenWidth / ((_provider.sendedDetailInfo.images?.length ?? 1) - 1) * (((_provider.sendedDetailInfo.images?.length ?? 1) - 1) - _nowPage)),
+                    width: _screenWidth - (_screenWidth / max(((_provider.sendedDetailInfo.images?.length ?? 1) - 1), 1) * max((((_provider.sendedDetailInfo.images?.length ?? 1) - 1) - _nowPage), 0)),
                     height: 20,
                   )
                 ],
-              )
+              ),
+              SizedBox(height: 30,),
+              //
             ],
           )
       )
