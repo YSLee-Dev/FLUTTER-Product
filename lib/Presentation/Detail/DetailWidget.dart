@@ -87,7 +87,7 @@ class _DetailWidgetState extends State<DetailWidget> {
                           alignment: Alignment.centerLeft,
                           child: Text("◀", style: TextStyle(fontSize: 25, fontWeight: FontWeight.w600, color: Colors.black87),),
                         ),
-                      if (!_imageWidgetRightArrowisHideen)
+                      if (!_imageWidgetRightArrowisHideen && (_provider.sendedDetailInfo.images?.length ?? 0) >= 2)
                         Container(
                           alignment: Alignment.centerRight,
                           child: Text("▶", style: TextStyle(fontSize: 25, fontWeight: FontWeight.w600, color: Colors.black87)),
@@ -112,7 +112,33 @@ class _DetailWidgetState extends State<DetailWidget> {
                 ],
               ),
               SizedBox(height: 30,),
-              //
+              Stack(
+                alignment: Alignment.centerLeft,
+                children: [
+                  Container(
+                    decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(15)), color: Color(0xfffcffcc),),
+                    width: 100,
+                    height: 50,
+                  ),
+                  Text("${_provider.sendedDetailInfo.title}", style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold), maxLines: 2, overflow: TextOverflow.ellipsis)
+                ],
+              ),
+              SizedBox(height: 10,),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text("${((_provider.sendedDetailInfo.price ?? 0.0) / ((100 - (_provider.sendedDetailInfo.discountPercentage ?? 0.0)) / 100)).toStringAsFixed(2)}",
+                    style: TextStyle(decoration: TextDecoration.lineThrough, fontSize: 18),
+                  ),
+                  Row(
+                    children: [
+                      Text('${_provider.sendedDetailInfo.discountPercentage}%', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25, color: Colors.redAccent,)),
+                      SizedBox(width: 10,),
+                      Text('${_provider.sendedDetailInfo.price}\$ ' , style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25),)
+                    ],
+                  )
+                ],
+              )
             ],
           )
       )
