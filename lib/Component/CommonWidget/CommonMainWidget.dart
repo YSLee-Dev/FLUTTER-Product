@@ -28,7 +28,7 @@ class CommonMainWidget extends StatelessWidget {
            },
            child: Text("${_isBackIconShow ? "← " : ""}${_title}", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25),),
          ),
-         Expanded(child: _widget)
+         Flexible(child: _widget)
        ],
      ),
    );
