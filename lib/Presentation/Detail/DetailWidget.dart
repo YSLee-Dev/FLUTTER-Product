@@ -4,6 +4,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_product/Component/CommonWidget/CommonMainWidget.dart';
+import 'package:flutter_product/Component/CommonWidget/CommonText.dart';
 import 'package:flutter_product/Presentation/Detail/DetailViewModel.dart';
 import 'package:provider/provider.dart';
 
@@ -97,12 +98,12 @@ class _DetailWidgetState extends State<DetailWidget> {
                           if (!_imageWidgetLeftArrowisHideen)
                             Container(
                               alignment: Alignment.centerLeft,
-                              child: Text("◀", style: TextStyle(fontSize: 25, fontWeight: FontWeight.w600, color: Colors.black87),),
+                              child: CommonText(text: "◀", fontSize: 25, fontWeight: FontWeight.w600, fontColor: Colors.black87)
                             ),
                           if (!_imageWidgetRightArrowisHideen && (_provider.sendedDetailInfo.images?.length ?? 0) >= 2)
                             Container(
                               alignment: Alignment.centerRight,
-                              child: Text("▶", style: TextStyle(fontSize: 25, fontWeight: FontWeight.w600, color: Colors.black87)),
+                              child: CommonText(text: "▶", fontSize: 25, fontWeight: FontWeight.w600, fontColor: Colors.black87)
                             )
                         ],
                       )
@@ -132,10 +133,10 @@ class _DetailWidgetState extends State<DetailWidget> {
                         width: 100,
                         height: 50,
                       ),
-                      Text("${_provider.sendedDetailInfo.title}", style: TextStyle(fontSize: 21, fontWeight: FontWeight.bold), maxLines: 2, overflow: TextOverflow.ellipsis)
+                      CommonText(text: "${_provider.sendedDetailInfo.title}", fontSize: 21, fontWeight: FontWeight.bold, maxLine: 2,)
                     ],
                   ),
-                  Text('${_provider.sendedDetailInfo.brand ?? 'Depends on destination'}', style: TextStyle(fontSize: 16)),
+                  CommonText(text: '${_provider.sendedDetailInfo.brand ?? 'Depends on destination'}', fontSize: 16),
                   SizedBox(height: 20,),
                   Container(
                     height: 30,
@@ -149,7 +150,7 @@ class _DetailWidgetState extends State<DetailWidget> {
                                   decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(15)), color: Colors.black45),
                                   alignment: Alignment.center,
                                   padding: EdgeInsets.only(left: 15, right: 15),
-                                  child: Text("${_provider.sendedDetailInfo.tags![index]}", style: TextStyle(fontSize: 14, color: Colors.white))
+                                  child: CommonText(text: "${_provider.sendedDetailInfo.tags![index]}", fontSize: 14, fontColor: Colors.white)
                               ),
                               SizedBox(width: 10,)
                             ],
@@ -166,15 +167,15 @@ class _DetailWidgetState extends State<DetailWidget> {
                       ),
                       Row(
                         children: [
-                          Text('${_provider.sendedDetailInfo.discountPercentage}%', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 23, color: Colors.redAccent,)),
+                          CommonText(text: '${_provider.sendedDetailInfo.discountPercentage}%', fontSize: 23, fontWeight: FontWeight.bold, fontColor: Colors.redAccent,),
                           SizedBox(width: 10,),
-                          Text('${_provider.sendedDetailInfo.price}\$ ' , style: TextStyle(fontWeight: FontWeight.bold, fontSize: 23),),
+                          CommonText(text: '${_provider.sendedDetailInfo.price}\$ ', fontSize: 23, fontWeight: FontWeight.bold,)
                         ],
                       )
                     ],
                   ),
                   SizedBox(height: 20,),
-                  Text("Reviews →", style: TextStyle(fontSize: 21, fontWeight: FontWeight.bold),),
+                  CommonText(text: "Reviews →", fontSize: 21, fontWeight: FontWeight.bold,),
                   SizedBox(height: 5,),
                   Container(
                       decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(15)), border: Border.all(color: Colors.black45, width: 1)),
@@ -193,10 +194,10 @@ class _DetailWidgetState extends State<DetailWidget> {
                               height: 60,
                               child: Row(
                                 children: [
-                                  Text('🧑🏻 ', style: TextStyle(fontSize: 20),),
-                                  Text('${_provider.sendedDetailInfo.reviews![index].name}', style: TextStyle(fontSize: 15),),
+                                  CommonText(text: '🧑🏻 ', fontSize: 23),
+                                  CommonText(text: '${_provider.sendedDetailInfo.reviews![index].name}', fontSize: 15),
                                   SizedBox(width: 10),
-                                  Flexible(child: Text('${_provider.sendedDetailInfo.reviews![index].comment}', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600), maxLines: 1, overflow: TextOverflow.ellipsis,))
+                                  Flexible(child: CommonText(text: '${_provider.sendedDetailInfo.reviews![index].comment}', fontSize: 15, fontWeight: FontWeight.w600,))
                                 ],
                               ),
                             );
@@ -204,12 +205,12 @@ class _DetailWidgetState extends State<DetailWidget> {
                       )
                   ),
                   SizedBox(height: 20,),
-                  Text("Product description", style: TextStyle(fontSize: 21, fontWeight: FontWeight.bold),),
+                  CommonText(text: "Product description", fontSize: 21, fontWeight: FontWeight.bold,),
                   SizedBox(height: 5,),
                   Container(
                     padding: EdgeInsets.all(15),
                     decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(15)), border: Border.all(color: Colors.black45, width: 1)),
-                    child: Text("${_provider.sendedDetailInfo.description}", style: TextStyle(fontSize: 15),),
+                    child: CommonText(text: "${_provider.sendedDetailInfo.description}", fontSize: 15, maxLine: 10000)
                   ),
                   SizedBox(height: 100,) // 여백
                 ],
@@ -221,7 +222,7 @@ class _DetailWidgetState extends State<DetailWidget> {
                 decoration: BoxDecoration(color: Colors.white),
                 child: Column(
                   children: [
-                    Text("Store: ${_provider.sendedDetailInfo.stock}", style: TextStyle( fontSize: 15, fontWeight: FontWeight.bold),),
+                    CommonText(text: "Store: ${_provider.sendedDetailInfo.stock}", fontSize: 15, fontWeight: FontWeight.bold,),
                     SizedBox(height: 10,),
                     Expanded(child: Container(
                         width: _screenWidth,
@@ -230,7 +231,7 @@ class _DetailWidgetState extends State<DetailWidget> {
                             onPressed: () {
                             print("CART INSERT BTN TAPPED");
                           },
-                            child: Text("Add to Cart", style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),)
+                            child: CommonText(text: "Add to Cart", fontSize: 18, fontWeight: FontWeight.bold, fontColor: Colors.white)
                         ),
                       )
                     )
