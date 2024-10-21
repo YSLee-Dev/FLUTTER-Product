@@ -11,7 +11,7 @@ class CommonText extends StatelessWidget {
 
   CommonText({
     required String text, required double fontSize, FontWeight fontWeight = FontWeight.normal,
-    Color fontColor = Colors.black, TextAlign textAlign = TextAlign.center,
+    Color fontColor = Colors.black, TextAlign textAlign = TextAlign.left,
     int maxLine = 1, TextOverflow overFlow = TextOverflow.ellipsis
   })
   : _text = text, _fontSize = fontSize, _fontWeight = fontWeight, _fontColor = fontColor, _textAlign = textAlign, _maxLine = maxLine, _overflow = overFlow;
