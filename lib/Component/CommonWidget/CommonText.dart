@@ -5,7 +5,7 @@ class CommonText extends StatelessWidget {
   double _fontSize;
   FontWeight _fontWeight;
   Color _fontColor;
-  TextAlign textAlign;
+  TextAlign _textAlign;
   int _maxLine;
   TextOverflow _overflow;
 
@@ -14,11 +14,11 @@ class CommonText extends StatelessWidget {
     Color fontColor = Colors.black, TextAlign textAlign = TextAlign.center,
     int maxLine = 1, TextOverflow overFlow = TextOverflow.ellipsis
   })
-  : _text = text, _fontSize = fontSize, _fontWeight = fontWeight, _fontColor = fontColor, textAlign = textAlign, _maxLine = maxLine, _overflow = overFlow;
+  : _text = text, _fontSize = fontSize, _fontWeight = fontWeight, _fontColor = fontColor, _textAlign = textAlign, _maxLine = maxLine, _overflow = overFlow;
 
 
   @override
   Widget build(BuildContext context) {
-    return Text('${_text}', style: TextStyle(fontWeight: _fontWeight, fontSize: _fontSize, color: _fontColor), maxLines: _maxLine, overflow: _overflow,);
+    return Text('${_text}', style: TextStyle(fontWeight: _fontWeight, fontSize: _fontSize, color: _fontColor), maxLines: _maxLine, overflow: _overflow, textAlign: _textAlign,);
   }
 }

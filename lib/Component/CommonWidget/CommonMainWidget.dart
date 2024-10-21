@@ -17,6 +17,7 @@ class CommonMainWidget extends StatelessWidget {
      decoration: BoxDecoration(borderRadius: _borderRadius, color: _backGroundColor),
      padding: EdgeInsets.only(left: 20, right: 20, top: 10),
      child: Column(
+       mainAxisSize: MainAxisSize.min,
        crossAxisAlignment: CrossAxisAlignment.start,
        children: [
          GestureDetector(
