@@ -245,7 +245,7 @@ class _DetailWidgetState extends State<DetailWidget> {
                                             widget: Column(
                                               mainAxisSize: MainAxisSize.min,
                                               children: [
-                                                SizedBox(height: 15,),
+                                                SizedBox(height: 10,),
                                                 Container(
                                                   decoration: BoxDecoration(color: Colors.black12, borderRadius: BorderRadius.circular(15)),
                                                   padding: EdgeInsets.all(15),
@@ -279,7 +279,7 @@ class _DetailWidgetState extends State<DetailWidget> {
                                                     ],
                                                   ),
                                                 ),
-                                                SizedBox(height: 15,),
+                                                SizedBox(height: 20,),
                                                 Container(
                                                   width: _screenWidth,
                                                   height: 50,
