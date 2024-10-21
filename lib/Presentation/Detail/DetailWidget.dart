@@ -230,70 +230,77 @@ class _DetailWidgetState extends State<DetailWidget> {
                             style:  ElevatedButton.styleFrom(backgroundColor: Colors.black),
                             onPressed: () {
                               showModalBottomSheet(
-                                  context: context,
-                                  builder: (context) {
-                                    return CommonMainWidget(
-                                        isInScaffold: false ,
-                                        title: 'Add to Cart',
-                                        isBackIconShow: false,
-                                        backgroundColor: Colors.white,
-                                        borderRadius: BorderRadius.circular(15),
-                                        widget: Column(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            SizedBox(height: 15,),
-                                            Container(
-                                              decoration: BoxDecoration(color: Colors.black12, borderRadius: BorderRadius.circular(15)),
-                                              padding: EdgeInsets.all(15),
-                                              child: Column(
-                                                mainAxisSize: MainAxisSize.min,
-                                                children: [
-                                                  CommonText(text: "${_provider.sendedDetailInfo.title}", fontSize: 18, fontWeight: FontWeight.bold),
-                                                  SizedBox(height: 15,),
-                                                  Row(
+                                context: context,
+                                builder: (context) {
+                                  return ChangeNotifierProvider.value(
+                                      value: _provider,
+                                      child: Consumer<DetailViewModel>(
+                                        builder: (context, viewModel, child) {
+                                          return CommonMainWidget(
+                                            isInScaffold: false ,
+                                            title: 'Add to Cart',
+                                            isBackIconShow: false,
+                                            backgroundColor: Colors.white,
+                                            borderRadius: BorderRadius.circular(15),
+                                            widget: Column(
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: [
+                                                SizedBox(height: 15,),
+                                                Container(
+                                                  decoration: BoxDecoration(color: Colors.black12, borderRadius: BorderRadius.circular(15)),
+                                                  padding: EdgeInsets.all(15),
+                                                  child: Column(
+                                                    mainAxisSize: MainAxisSize.min,
                                                     children: [
-                                                      ElevatedButton(
-                                                          style:  ElevatedButton.styleFrom(backgroundColor: Colors.black),
-                                                          onPressed: () {
-
-                                                          },
-                                                          child: CommonText(text: "-", fontSize: 18, fontWeight: FontWeight.bold, fontColor: Colors.white,)
-                                                      ),
-                                                      SizedBox(width: 15,),
-                                                      CommonText(text: "1", fontSize: 20, fontWeight: FontWeight.bold,),
-                                                      SizedBox(width: 15,),
-                                                      ElevatedButton(
-                                                          style:  ElevatedButton.styleFrom(backgroundColor: Colors.white),
-                                                          onPressed: () {
-
-                                                          },
-                                                          child: CommonText(text: "+", fontSize: 18, fontWeight: FontWeight.bold)
-                                                      ),
-                                                      Expanded(child: CommonText(text: "${_provider.sendedDetailInfo.price}", fontSize: 15, fontWeight: FontWeight.bold, textAlign: TextAlign.right,),)
+                                                      CommonText(text: "${_provider.sendedDetailInfo.title}", fontSize: 18, fontWeight: FontWeight.bold),
+                                                      SizedBox(height: 15,),
+                                                      Row(
+                                                        children: [
+                                                          ElevatedButton(
+                                                              style:  ElevatedButton.styleFrom(backgroundColor: Colors.black),
+                                                              onPressed: () {
+                                                                _provider.orderQuantityMinus();
+                                                              },
+                                                              child: CommonText(text: "-", fontSize: 18, fontWeight: FontWeight.bold, fontColor: Colors.white,)
+                                                          ),
+                                                          SizedBox(width: 15,),
+                                                          CommonText(text: "${viewModel.orderQuantity}", fontSize: 20, fontWeight: FontWeight.bold,),
+                                                          SizedBox(width: 15,),
+                                                          ElevatedButton(
+                                                              style:  ElevatedButton.styleFrom(backgroundColor: Colors.white),
+                                                              onPressed: () {
+                                                                _provider.orderQuantityPlus();
+                                                              },
+                                                              child: CommonText(text: "+", fontSize: 18, fontWeight: FontWeight.bold)
+                                                          ),
+                                                          Expanded(child: CommonText(text: "${(_provider.sendedDetailInfo.price! * viewModel.orderQuantity).toStringAsFixed(2)}\$", fontSize: 18, fontWeight: FontWeight.bold, textAlign: TextAlign.right,),)
+                                                        ],
+                                                      )
                                                     ],
-                                                  )
-                                                ],
-                                              ),
-                                            ),
-                                            SizedBox(height: 15,),
-                                            Container(
-                                              width: _screenWidth,
-                                              height: 50,
-                                              child: ElevatedButton(
-                                                  style:  ElevatedButton.styleFrom(backgroundColor: Colors.black),
-                                                  onPressed: () {
+                                                  ),
+                                                ),
+                                                SizedBox(height: 15,),
+                                                Container(
+                                                  width: _screenWidth,
+                                                  height: 50,
+                                                  child: ElevatedButton(
+                                                      style:  ElevatedButton.styleFrom(backgroundColor: Colors.black),
+                                                      onPressed: () {
 
-                                                  },
-                                                  child: CommonText(text: "Add to Cart", fontSize: 18, fontWeight: FontWeight.bold, fontColor: Colors.white)
-                                              ),
+                                                      },
+                                                      child: CommonText(text: "Add to Cart", fontSize: 18, fontWeight: FontWeight.bold, fontColor: Colors.white)
+                                                  ),
+                                                ),
+                                                SizedBox(height: 30,),
+                                              ],
                                             ),
-                                            SizedBox(height: 30,),
-                                          ],
-                                        ),
-                                    );
-                                  },
+                                          );
+                                        }
+                                      )
+                                  );
+                                },
                               );
-                          },
+                            },
                             child: CommonText(text: "Add to Cart", fontSize: 18, fontWeight: FontWeight.bold, fontColor: Colors.white)
                         ),
                       )
