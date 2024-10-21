@@ -4,6 +4,8 @@ import 'package:flutter_product/Presentation/Detail/DetailWidget.dart';
 import 'package:flutter_product/Presentation/Home/HomeViewModel.dart';
 import 'package:provider/provider.dart';
 
+import '../../Component/CommonWidget/CommonText.dart';
+
 class HomeWidget extends StatefulWidget {
   const HomeWidget({super.key});
 
@@ -57,7 +59,7 @@ class _HomeWidgetState extends State<HomeWidget> {
                     backgroundColor: _provider.nowListShowTapped ? Colors.black : Colors.black26,
                   ),
                   onPressed: () => _viewCategoryBtnTapped(isList: true),
-                  child: Text("List", style: TextStyle(color: Colors.white)),
+                  child: CommonText(text: "List", fontSize: 15, fontColor: Colors.white,)
                 ),
               ),
               SizedBox(width: 20),
@@ -67,7 +69,7 @@ class _HomeWidgetState extends State<HomeWidget> {
                     backgroundColor: !_provider.nowListShowTapped ? Colors.black : Colors.black26,
                   ),
                   onPressed: () => _viewCategoryBtnTapped(isList: false),
-                  child: Text("Grid", style: TextStyle(color: Colors.white)),
+                    child: CommonText(text: "Grid", fontSize: 15, fontColor: Colors.white,)
                 ),
               ),
             ],
@@ -131,27 +133,12 @@ class _HomeWidgetState extends State<HomeWidget> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(
-                                  '${_provider.nowProductModelList[index].title}',
-                                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                                  maxLines: 3,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
+                                CommonText(text: '${_provider.nowProductModelList[index].title}', fontSize: 20, fontWeight: FontWeight.bold, maxLine: 3,),
                                 Row(
                                   children: [
-                                    Text(
-                                      '${_provider.nowProductModelList[index].price}',
-                                      style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
+                                    CommonText(text: '${_provider.nowProductModelList[index].price}', fontSize: 15, fontWeight: FontWeight.bold),
                                     SizedBox(width: 10),
-                                    Text(
-                                      '${_provider.nowProductModelList[index].tags?.first ?? ""}',
-                                      style: TextStyle(fontSize: 15),
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
+                                    CommonText(text: '${_provider.nowProductModelList[index].tags?.first ?? ""}', fontSize: 15),
                                   ],
                                 ),
                               ],
@@ -208,34 +195,18 @@ class _HomeWidgetState extends State<HomeWidget> {
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.end,
                               children: [
-                                Text(
-                                  '${_provider.nowProductModelList[index].title}',
-                                  style: TextStyle(color: Colors.white, fontSize: 17, fontWeight: FontWeight.bold),
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
+                                CommonText(text: '${_provider.nowProductModelList[index].title}', fontSize: 17, fontWeight: FontWeight.bold, fontColor: Colors.white,),
                                 SizedBox(width: 10),
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
                                     Flexible(
-                                      child: Text(
-                                        '${_provider.nowProductModelList[index].price}',
-                                        textAlign: TextAlign.right,
-                                        style: TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.bold),
-                                        maxLines: 1,
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
+                                      child: CommonText(text: '${_provider.nowProductModelList[index].price}', fontSize: 15, fontWeight: FontWeight.bold, fontColor: Colors.white, textAlign: TextAlign.right)
                                     ),
                                     SizedBox(width: 5),
                                     Flexible(
-                                      child: Text(
-                                        '${_provider.nowProductModelList[index].tags?.first ?? ""}',
-                                        style: TextStyle(color: Colors.white, fontSize: 15),
-                                        maxLines: 1,
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
+                                      child: CommonText(text:'${_provider.nowProductModelList[index].tags?.first ?? ""}', fontSize: 15, fontColor: Colors.white)
                                     ),
                                   ],
                                 ),
