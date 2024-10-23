@@ -19,17 +19,8 @@ class MyApp extends StatelessWidget {
     HomeWidget.homeWidgetRouteName: (context) => HomeWidget(),
 
     DetailWidget.detailWidgetRoutename: (context) {
-      return Builder(
-        builder: (context) => Builder(
-          builder: (context) {
-            final model = ModalRoute.of(context)!.settings.arguments as ProductModel;
-            return provider.ChangeNotifierProvider(
-              create: (context) => DetailViewModel(model: model),
-              child: DetailWidget(),
-            );
-          },
-        )
-      );
+      final model = ModalRoute.of(context)!.settings.arguments as ProductModel;
+      return DetailWidget(sendedProductModel: model);
     }
   };
 

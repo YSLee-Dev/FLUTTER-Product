@@ -1,36 +1,42 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_product/Component/CommonWidget/CommonMainWidget.dart';
 import 'package:flutter_product/Component/CommonWidget/CommonText.dart';
+import 'package:flutter_product/Component/Model/ProductModel.dart';
 import 'package:flutter_product/Presentation/Detail/DetailViewModel.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class DetailWidget extends StatefulWidget {
+class DetailWidget extends ConsumerStatefulWidget {
   static const String detailWidgetRoutename = "detailWidgetRoutename";
-
-  const DetailWidget({super.key});
+  final ProductModel sendedProductModel;
+  const DetailWidget({super.key, required this.sendedProductModel});
 
   @override
-  State<DetailWidget> createState() => _DetailWidgetState();
+  ConsumerState<DetailWidget> createState() => _DetailWidgetState();
 }
 
-class _DetailWidgetState extends State<DetailWidget> {
+class _DetailWidgetState extends ConsumerState<DetailWidget> {
   late final PageController _imagePageController;
   late final PageController _reviewsPageController;
   late double _screenWidth = MediaQuery.of(context).size.width;
-  late final _provider = context.read<DetailViewModel>();
   late final StreamSubscription<int>? _indexStream;
 
   bool _imageWidgetLeftArrowisHideen = true;
   bool _imageWidgetRightArrowisHideen = false;
+  bool userScrolled = false;
   int _nowPage = 0;
 
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+       // Widget으로 전달된 model을 ViewModel(Provider)에 전달하여 초기화
+      ref.read(detailViewModelProvider.notifier)
+          .updateModel(widget.sendedProductModel);
+    });
+
     _imagePageController = PageController();
     _imagePageController.addListener (() {
       if ((_imagePageController.page ?? 0.1) % 1.0 == 0.0) {
@@ -41,11 +47,7 @@ class _DetailWidgetState extends State<DetailWidget> {
         });
       }
     });
-
     _reviewsPageController = PageController();
-    _indexStream =_provider.reviewIndexTimer().listen((index) {
-      _reviewsPageController.animateTo(index * 55, duration: Duration(milliseconds: 500), curve: Curves.easeInOutCirc);
-    });
   }
 
   @override
@@ -58,6 +60,22 @@ class _DetailWidgetState extends State<DetailWidget> {
 
   @override
   Widget build(BuildContext context) {
+    final _provider = ref.watch(detailViewModelProvider);
+
+    ref.listen<AsyncValue<int>>(
+      reviewIndexTimerProvider(
+          reviewsLength: ref.watch(detailViewModelProvider).reviews?.length ?? 0
+      ),(_, next) {
+        next.whenData((index) {
+          _reviewsPageController.animateTo(
+              index * 55,
+              duration: Duration(milliseconds: 500),
+              curve: Curves.easeInOutCirc
+          );
+        });
+      },
+    );
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: CommonMainWidget(
@@ -78,14 +96,14 @@ class _DetailWidgetState extends State<DetailWidget> {
                         children: [
                           PageView.builder(
                               scrollDirection: Axis.horizontal,
-                              itemCount: _provider.sendedDetailInfo.images?.length ?? 0,
+                        itemCount: _provider.images?.length ?? 0,
                               controller: _imagePageController,
                               itemBuilder: (context, index) {
                                 return Stack(
                                     alignment: Alignment.center,
                                     children: [
                                       Image.network(
-                                          _provider.sendedDetailInfo.images![index], width: _screenWidth, height: 200,
+                                          _provider.images![index], width: _screenWidth, height: 200,
                                           loadingBuilder: (context, child, loadingProgress) {
                                             if(loadingProgress == null) {return child;}
                                             return CircularProgressIndicator();
@@ -100,7 +118,7 @@ class _DetailWidgetState extends State<DetailWidget> {
                               alignment: Alignment.centerLeft,
                               child: CommonText(text: "◀", fontSize: 25, fontWeight: FontWeight.w600, fontColor: Colors.black87)
                             ),
-                          if (!_imageWidgetRightArrowisHideen && (_provider.sendedDetailInfo.images?.length ?? 0) >= 2)
+                          if (!_imageWidgetRightArrowisHideen && (_provider.images?.length ?? 0) >= 2)
                             Container(
                               alignment: Alignment.centerRight,
                               child: CommonText(text: "▶", fontSize: 25, fontWeight: FontWeight.w600, fontColor: Colors.black87)
@@ -119,7 +137,7 @@ class _DetailWidgetState extends State<DetailWidget> {
                       ),
                       Container(
                         decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(15)), color: Colors.black87),
-                        width: _screenWidth - (_screenWidth / max(((_provider.sendedDetailInfo.images?.length ?? 1) - 1), 1) * max((((_provider.sendedDetailInfo.images?.length ?? 1) - 1) - _nowPage), 0)),
+                        width: _screenWidth - (_screenWidth / max(((_provider.images?.length ?? 1) - 1), 1) * max((((_provider.images?.length ?? 1) - 1) - _nowPage), 0)),
                         height: 20,
                       )
                     ],
@@ -133,16 +151,16 @@ class _DetailWidgetState extends State<DetailWidget> {
                         width: 100,
                         height: 50,
                       ),
-                      CommonText(text: "${_provider.sendedDetailInfo.title}", fontSize: 21, fontWeight: FontWeight.bold, maxLine: 2,)
+                      CommonText(text: "${_provider.title}", fontSize: 21, fontWeight: FontWeight.bold, maxLine: 2,)
                     ],
                   ),
-                  CommonText(text: '${_provider.sendedDetailInfo.brand ?? 'Depends on destination'}', fontSize: 16,),
+                  CommonText(text: '${_provider.brand ?? 'Depends on destination'}', fontSize: 16,),
                   SizedBox(height: 20,),
                   Container(
                     height: 30,
                     child: ListView.builder(
                         scrollDirection: Axis.horizontal,
-                        itemCount: _provider.sendedDetailInfo.tags?.length ?? 0,
+                        itemCount: _provider.tags?.length ?? 0,
                         itemBuilder: (builder, index) {
                           return Row(
                             children: [
@@ -150,7 +168,7 @@ class _DetailWidgetState extends State<DetailWidget> {
                                   decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(15)), color: Colors.black45),
                                   alignment: Alignment.center,
                                   padding: EdgeInsets.only(left: 15, right: 15),
-                                  child: CommonText(text: "${_provider.sendedDetailInfo.tags![index]}", fontSize: 14, fontColor: Colors.white)
+                                  child: CommonText(text: "${_provider.tags![index]}", fontSize: 14, fontColor: Colors.white)
                               ),
                               SizedBox(width: 10,)
                             ],
@@ -162,14 +180,14 @@ class _DetailWidgetState extends State<DetailWidget> {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text("${((_provider.sendedDetailInfo.price ?? 0.0) / ((100 - (_provider.sendedDetailInfo.discountPercentage ?? 0.0)) / 100)).toStringAsFixed(2)}\$",
+                      Text("${((_provider.price ?? 0.0) / ((100 - (_provider.discountPercentage ?? 0.0)) / 100)).toStringAsFixed(2)}\$",
                         style: TextStyle(decoration: TextDecoration.lineThrough, fontSize: 17),
                       ),
                       Row(
                         children: [
-                          CommonText(text: '${_provider.sendedDetailInfo.discountPercentage}%', fontSize: 23, fontWeight: FontWeight.bold, fontColor: Colors.redAccent,),
+                          CommonText(text: '${_provider.discountPercentage}%', fontSize: 23, fontWeight: FontWeight.bold, fontColor: Colors.redAccent,),
                           SizedBox(width: 10,),
-                          CommonText(text: '${_provider.sendedDetailInfo.price}\$ ', fontSize: 23, fontWeight: FontWeight.bold,)
+                          CommonText(text: '${_provider.price}\$ ', fontSize: 23, fontWeight: FontWeight.bold,)
                         ],
                       )
                     ],
@@ -183,9 +201,9 @@ class _DetailWidgetState extends State<DetailWidget> {
                       child: PageView.builder(
                           controller: _reviewsPageController,
                           scrollDirection: Axis.vertical,
-                          itemCount: _provider.sendedDetailInfo.reviews?.length ?? 0,
+                          itemCount: _provider.reviews?.length ?? 0,
                           onPageChanged: (index) {
-                            _provider.nowShowingReviewIndexChnage(index);
+
                           },
                           itemBuilder: (context, index) {
                             return Container(
@@ -195,9 +213,9 @@ class _DetailWidgetState extends State<DetailWidget> {
                               child: Row(
                                 children: [
                                   CommonText(text: '🧑🏻 ', fontSize: 23),
-                                  CommonText(text: '${_provider.sendedDetailInfo.reviews![index].name}', fontSize: 15),
+                                  CommonText(text: '${_provider.reviews![index].name}', fontSize: 15),
                                   SizedBox(width: 10),
-                                  Flexible(child: CommonText(text: '${_provider.sendedDetailInfo.reviews![index].comment}', fontSize: 15, fontWeight: FontWeight.w600,))
+                                  Flexible(child: CommonText(text: '${_provider.reviews![index].comment}', fontSize: 15, fontWeight: FontWeight.w600,))
                                 ],
                               ),
                             );
@@ -210,7 +228,7 @@ class _DetailWidgetState extends State<DetailWidget> {
                   Container(
                     padding: EdgeInsets.all(15),
                     decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(15)), border: Border.all(color: Colors.black45, width: 1)),
-                    child: CommonText(text: "${_provider.sendedDetailInfo.description}", fontSize: 15, maxLine: 10000)
+                    child: CommonText(text: "${_provider.description}", fontSize: 15, maxLine: 10000)
                   ),
                   SizedBox(height: 100,) // 여백
                 ],
@@ -222,7 +240,7 @@ class _DetailWidgetState extends State<DetailWidget> {
                 decoration: BoxDecoration(color: Colors.white),
                 child: Column(
                   children: [
-                    CommonText(text: "Store: ${_provider.sendedDetailInfo.stock}", fontSize: 15, fontWeight: FontWeight.bold,),
+                    CommonText(text: "Store: ${_provider.stock}", fontSize: 15, fontWeight: FontWeight.bold,),
                     SizedBox(height: 10,),
                     Expanded(child: Container(
                         width: _screenWidth,
@@ -232,71 +250,64 @@ class _DetailWidgetState extends State<DetailWidget> {
                               showModalBottomSheet(
                                 context: context,
                                 builder: (context) {
-                                  return ChangeNotifierProvider.value(
-                                      value: _provider,
-                                      child: Consumer<DetailViewModel>(
-                                        builder: (context, viewModel, child) {
-                                          return CommonMainWidget(
-                                            isInScaffold: false ,
-                                            title: 'Add to Cart',
-                                            isBackIconShow: false,
-                                            backgroundColor: Colors.white,
-                                            borderRadius: BorderRadius.circular(15),
-                                            widget: Column(
-                                              mainAxisSize: MainAxisSize.min,
-                                              children: [
-                                                SizedBox(height: 10,),
-                                                Container(
-                                                  decoration: BoxDecoration(color: Colors.black12, borderRadius: BorderRadius.circular(15)),
-                                                  padding: EdgeInsets.all(15),
-                                                  child: Column(
-                                                    mainAxisSize: MainAxisSize.min,
-                                                    children: [
-                                                      CommonText(text: "${_provider.sendedDetailInfo.title}", fontSize: 18, fontWeight: FontWeight.bold),
-                                                      SizedBox(height: 15,),
-                                                      Row(
-                                                        children: [
-                                                          ElevatedButton(
-                                                              style:  ElevatedButton.styleFrom(backgroundColor: Colors.black),
-                                                              onPressed: () {
-                                                                _provider.orderQuantityMinus();
-                                                              },
-                                                              child: CommonText(text: "-", fontSize: 18, fontWeight: FontWeight.bold, fontColor: Colors.white,)
-                                                          ),
-                                                          SizedBox(width: 15,),
-                                                          CommonText(text: "${viewModel.orderQuantity}", fontSize: 20, fontWeight: FontWeight.bold,),
-                                                          SizedBox(width: 15,),
-                                                          ElevatedButton(
-                                                              style:  ElevatedButton.styleFrom(backgroundColor: Colors.white),
-                                                              onPressed: () {
-                                                                _provider.orderQuantityPlus();
-                                                              },
-                                                              child: CommonText(text: "+", fontSize: 18, fontWeight: FontWeight.bold)
-                                                          ),
-                                                          Expanded(child: CommonText(text: "${(_provider.sendedDetailInfo.price! * viewModel.orderQuantity).toStringAsFixed(2)}\$", fontSize: 18, fontWeight: FontWeight.bold, textAlign: TextAlign.right,),)
-                                                        ],
-                                                      )
-                                                    ],
-                                                  ),
-                                                ),
-                                                SizedBox(height: 20,),
-                                                Container(
-                                                  width: _screenWidth,
-                                                  height: 50,
-                                                  child: ElevatedButton(
+                                  return CommonMainWidget(
+                                    isInScaffold: false ,
+                                    title: 'Add to Cart',
+                                    isBackIconShow: false,
+                                    backgroundColor: Colors.white,
+                                    borderRadius: BorderRadius.circular(15),
+                                    widget: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        SizedBox(height: 10,),
+                                        Container(
+                                          decoration: BoxDecoration(color: Colors.black12, borderRadius: BorderRadius.circular(15)),
+                                          padding: EdgeInsets.all(15),
+                                          child: Column(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              CommonText(text: "${_provider.title}", fontSize: 18, fontWeight: FontWeight.bold),
+                                              SizedBox(height: 15,),
+                                              Row(
+                                                children: [
+                                                  ElevatedButton(
                                                       style:  ElevatedButton.styleFrom(backgroundColor: Colors.black),
                                                       onPressed: () {
 
                                                       },
-                                                      child: CommonText(text: "Add to Cart", fontSize: 18, fontWeight: FontWeight.bold, fontColor: Colors.white)
+                                                      child: CommonText(text: "-", fontSize: 18, fontWeight: FontWeight.bold, fontColor: Colors.white,)
                                                   ),
-                                                ),
-                                                SizedBox(height: 30,),
-                                              ],
-                                            ),
-                                          );
-                                        }
-                                      )
+                                                  SizedBox(width: 15,),
+                                                  CommonText(text: "1", fontSize: 20, fontWeight: FontWeight.bold,),
+                                                  SizedBox(width: 15,),
+                                                  ElevatedButton(
+                                                      style:  ElevatedButton.styleFrom(backgroundColor: Colors.white),
+                                                      onPressed: () {
+
+                                                      },
+                                                      child: CommonText(text: "+", fontSize: 18, fontWeight: FontWeight.bold)
+                                                  ),
+                                                  Expanded(child: CommonText(text: "${(_provider.price! * 1).toStringAsFixed(2)}\$", fontSize: 18, fontWeight: FontWeight.bold, textAlign: TextAlign.right,),)
+                                                ],
+                                              )
+                                            ],
+                                          ),
+                                        ),
+                                        SizedBox(height: 20,),
+                                        Container(
+                                          width: _screenWidth,
+                                          height: 50,
+                                          child: ElevatedButton(
+                                              style:  ElevatedButton.styleFrom(backgroundColor: Colors.black),
+                                              onPressed: () {
+
+                                              },
+                                              child: CommonText(text: "Add to Cart", fontSize: 18, fontWeight: FontWeight.bold, fontColor: Colors.white)
+                                          ),
+                                        ),
+                                        SizedBox(height: 30,),
+                                      ],
+                                    ),
                                   );
                                 },
                               );

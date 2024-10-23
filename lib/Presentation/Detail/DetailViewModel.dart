@@ -1,51 +1,44 @@
 import 'dart:async';
-import 'dart:ffi';
-import 'dart:math';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_product/Component/Model/ProductModel.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+part 'DetailViewModel.g.dart';
 
-class DetailViewModel with ChangeNotifier  {
-  final ProductModel sendedDetailInfo;
-  int get orderQuantity => _orderQuantity;
-
+@riverpod
+Stream<int> reviewIndexTimer(ReviewIndexTimerRef ref,{required int reviewsLength}) async* {
   int _reviewShowingIndex = 0;
-  bool _userScrolled = false;
-  int _orderQuantity = 1;
-
-  DetailViewModel({required ProductModel model }) : sendedDetailInfo = model;
-
-  void nowShowingReviewIndexChnage(int index) {
-    _reviewShowingIndex = index;
-    _userScrolled = true;
+  if (reviewsLength < 2) {
+    return;
   }
-
-  Stream<int> reviewIndexTimer() async* {
-    if ((sendedDetailInfo.reviews?.length ?? 0) < 2) {
-      return;
+  while (true) {
+    await Future.delayed(Duration(seconds: 2));
+    if (_reviewShowingIndex >= reviewsLength -1 ) {
+      _reviewShowingIndex = 0;
+    } else {
+      _reviewShowingIndex = ++_reviewShowingIndex;
     }
-    while (true) {
-      await Future.delayed(Duration(seconds: 2));
-      if (_reviewShowingIndex >= (sendedDetailInfo.reviews!.length) -1 ) {
-        _reviewShowingIndex = 0;
-      } else {
-        _reviewShowingIndex = ++_reviewShowingIndex;
-      }
 
-      await Future.delayed(Duration(seconds: _userScrolled ? 1 : 0));
-      _userScrolled = false;
-      yield _reviewShowingIndex;
-    }
+    //await Future.delayed(Duration(seconds: userScrolled ? 1 : 0));
+    yield _reviewShowingIndex;
+  }
+}
+
+StateProvider<int> orderQuantity(OrderQuantityRef ref) {
+  return StateProvider((ref) => 0);
+}
+
+@riverpod
+class DetailViewModel extends _$DetailViewModel {
+  // 임의의 값
+  ProductModel _sendedDetailInfo = ProductModel(id: 0, title: "title", description: "description", stock: 0);
+
+  void updateModel(ProductModel model) {
+    _sendedDetailInfo = model;
+    ref.invalidateSelf();
   }
 
-  void orderQuantityPlus() {
-    if ((_orderQuantity + 1) > sendedDetailInfo.stock) {return;}
-    _orderQuantity ++;
-    notifyListeners();
-  }
-
-  void orderQuantityMinus() {
-    if ((_orderQuantity - 1) < 0) {return;}
-    _orderQuantity --;
-    notifyListeners();
+  ProductModel build() {
+    return _sendedDetailInfo;
   }
 }
