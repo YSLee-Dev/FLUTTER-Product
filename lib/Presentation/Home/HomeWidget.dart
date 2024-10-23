@@ -2,30 +2,30 @@ import 'package:flutter/material.dart';
 import 'package:flutter_product/Component/CommonWidget/CommonMainWidget.dart';
 import 'package:flutter_product/Presentation/Detail/DetailWidget.dart';
 import 'package:flutter_product/Presentation/Home/HomeViewModel.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../Component/CommonWidget/CommonText.dart';
 
-class HomeWidget extends StatefulWidget {
+class HomeWidget extends ConsumerStatefulWidget {
   const HomeWidget({super.key});
 
   static const homeWidgetRouteName = "homeWidgetRouteName";
 
   @override
-  State<HomeWidget> createState() => _HomeWidgetState();
+  ConsumerState createState() => _HomeWidgetState();
 }
 
-class _HomeWidgetState extends State<HomeWidget> {
+class _HomeWidgetState extends ConsumerState<HomeWidget> {
   late ScrollController _scrollController;
-  late final _provider = context.read<HomeViewModel>();
+  bool _nowListShowTapped = true;
 
   @override
   void initState() {
     super.initState();
     _scrollController = ScrollController();
     _scrollController.addListener(() {
-      if (_scrollController.position.maxScrollExtent - 100 < _scrollController.offset && !_provider.nowLoading) {
-        _provider.moreProductListRequet();
+      if (_scrollController.position.maxScrollExtent - 100 < _scrollController.offset && !ref.read(homeViewModelProvider).isLoading) {
+        ref.read(homeViewModelProvider.notifier).addProductList();
       }
     });
   }
@@ -38,12 +38,14 @@ class _HomeWidgetState extends State<HomeWidget> {
 
   void _viewCategoryBtnTapped({required bool isList}) {
     _scrollController.jumpTo(0);
-    _provider.nowTappedIsList(isList);
+    setState(() {
+     _nowListShowTapped = isList;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    final _provider = context.watch<HomeViewModel>();
+    final _provider = ref.watch(homeViewModelProvider);
 
     return CommonMainWidget(
       title: "Home",
@@ -56,7 +58,7 @@ class _HomeWidgetState extends State<HomeWidget> {
               Expanded(
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: _provider.nowListShowTapped ? Colors.black : Colors.black26,
+                    backgroundColor: _nowListShowTapped ? Colors.black : Colors.black26,
                   ),
                   onPressed: () => _viewCategoryBtnTapped(isList: true),
                   child: CommonText(text: "List", fontSize: 15, fontColor: Colors.white,)
@@ -66,7 +68,7 @@ class _HomeWidgetState extends State<HomeWidget> {
               Expanded(
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: !_provider.nowListShowTapped ? Colors.black : Colors.black26,
+                    backgroundColor: !_nowListShowTapped ? Colors.black : Colors.black26,
                   ),
                   onPressed: () => _viewCategoryBtnTapped(isList: false),
                     child: CommonText(text: "Grid", fontSize: 15, fontColor: Colors.white,)
@@ -75,34 +77,35 @@ class _HomeWidgetState extends State<HomeWidget> {
             ],
           ),
           SizedBox(height: 30),
-          if (_provider.nowProductModelList.isEmpty)
+          if (_provider.value?.isEmpty ?? true)
             SizedBox(
               width: 100,
               height: 100,
               child: CircularProgressIndicator(),
             ),
+          if (!(_provider.value?.isEmpty ?? true))
           Expanded(
             child: AnimatedSwitcher(
               duration: Duration(milliseconds: 250),
               transitionBuilder: (Widget child, Animation<double> animation) {
                 return SlideTransition(
                   position: Tween<Offset>(
-                    begin: Offset(_provider.nowListShowTapped ? 0.2 : -0.2, 0.0),
+                    begin: Offset(_nowListShowTapped? 0.2 : -0.2, 0.0),
                     end: Offset.zero,
                   ).animate(animation),
                   child: FadeTransition(opacity: animation, child: child),
                 );
               },
-              child: _provider.nowListShowTapped
+              child: _nowListShowTapped
                   ? ListView.builder(
                 key: ValueKey<bool>(true),
                 controller: _scrollController,
-                itemCount: _provider.nowProductModelList.length,
+                itemCount: _provider.value!.length,
                 itemBuilder: (context, index) {
                   return GestureDetector(
                     onTap: () => Navigator.of(context).pushNamed(
                       DetailWidget.detailWidgetRoutename,
-                      arguments: _provider.nowProductModelList[index],
+                      arguments: _provider.value![index],
                     ),
                     child: Container(
                       padding: EdgeInsets.symmetric(vertical: 10),
@@ -115,7 +118,7 @@ class _HomeWidgetState extends State<HomeWidget> {
                               border: Border.all(color: Colors.black38, width: 1),
                             ),
                             child: Image.network(
-                              '${_provider.nowProductModelList[index].thumbnail}',
+                              '${_provider.value![index].thumbnail}',
                               loadingBuilder: (context, child, loadingProgress) {
                                 if (loadingProgress == null) {
                                   return SizedBox(width: 120, height: 120, child: child);
@@ -133,12 +136,12 @@ class _HomeWidgetState extends State<HomeWidget> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                CommonText(text: '${_provider.nowProductModelList[index].title}', fontSize: 20, fontWeight: FontWeight.bold, maxLine: 3,),
+                                CommonText(text: '${_provider.value![index].title}', fontSize: 20, fontWeight: FontWeight.bold, maxLine: 3,),
                                 Row(
                                   children: [
-                                    CommonText(text: '${_provider.nowProductModelList[index].price}', fontSize: 15, fontWeight: FontWeight.bold),
+                                    CommonText(text: '${_provider.value![index].price}', fontSize: 15, fontWeight: FontWeight.bold),
                                     SizedBox(width: 10),
-                                    CommonText(text: '${_provider.nowProductModelList[index].tags?.first ?? ""}', fontSize: 15),
+                                    CommonText(text: '${_provider.value![index].tags?.first ?? ""}', fontSize: 15),
                                   ],
                                 ),
                               ],
@@ -158,12 +161,12 @@ class _HomeWidgetState extends State<HomeWidget> {
                   mainAxisSpacing: 10,
                   crossAxisSpacing: 10,
                 ),
-                itemCount: _provider.nowProductModelList.length,
+                itemCount: _provider.value!.length,
                 itemBuilder: (context, index) {
                   return GestureDetector(
                     onTap: () => Navigator.of(context).pushNamed(
                       DetailWidget.detailWidgetRoutename,
-                      arguments: _provider.nowProductModelList[index],
+                      arguments: _provider.value![index],
                     ),
                     child: Container(
                       decoration: BoxDecoration(
@@ -174,7 +177,7 @@ class _HomeWidgetState extends State<HomeWidget> {
                         alignment: Alignment.bottomCenter,
                         children: [
                           Image.network(
-                            '${_provider.nowProductModelList[index].thumbnail}',
+                            '${_provider.value![index].thumbnail}',
                             loadingBuilder: (context, child, loadingProgress) {
                               if (loadingProgress == null) {
                                 return child;
@@ -195,18 +198,18 @@ class _HomeWidgetState extends State<HomeWidget> {
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.end,
                               children: [
-                                CommonText(text: '${_provider.nowProductModelList[index].title}', fontSize: 17, fontWeight: FontWeight.bold, fontColor: Colors.white,),
+                                CommonText(text: '${_provider.value![index].title}', fontSize: 17, fontWeight: FontWeight.bold, fontColor: Colors.white,),
                                 SizedBox(width: 10),
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
                                     Flexible(
-                                      child: CommonText(text: '${_provider.nowProductModelList[index].price}', fontSize: 15, fontWeight: FontWeight.bold, fontColor: Colors.white, textAlign: TextAlign.right)
+                                      child: CommonText(text: '${_provider.value![index].price}', fontSize: 15, fontWeight: FontWeight.bold, fontColor: Colors.white, textAlign: TextAlign.right)
                                     ),
                                     SizedBox(width: 5),
                                     Flexible(
-                                      child: CommonText(text:'${_provider.nowProductModelList[index].tags?.first ?? ""}', fontSize: 15, fontColor: Colors.white)
+                                      child: CommonText(text:'${_provider.value![index].tags?.first ?? ""}', fontSize: 15, fontColor: Colors.white)
                                     ),
                                   ],
                                 ),

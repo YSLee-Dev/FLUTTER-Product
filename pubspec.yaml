@@ -31,7 +31,8 @@ dependencies:
   flutter:
     sdk: flutter
   http: ^1.2.0
-
+  flutter_riverpod: ^2.6.0
+  riverpod_annotation: ^2.3.3
 
 
   # The following adds the Cupertino Icons font to your application.
@@ -44,6 +45,10 @@ dev_dependencies:
   http: ^1.2.0
   provider: ^6.1.2
   flutter_lints: ^4.0.0
+  build_runner:
+  custom_lint:
+  riverpod_generator: ^2.4.2
+  riverpod_lint: ^2.3.12
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
