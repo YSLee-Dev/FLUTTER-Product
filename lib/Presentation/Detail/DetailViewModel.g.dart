@@ -156,21 +156,6 @@ class _ReviewIndexTimerProviderElement
   int get reviewsLength => (origin as ReviewIndexTimerProvider).reviewsLength;
 }
 
-String _$orderQuantityHash() => r'f3bf4ac5d471e9bce3620a39925d14f6f7204e6a';
-
-/// See also [orderQuantity].
-@ProviderFor(orderQuantity)
-final orderQuantityProvider = AutoDisposeProvider<StateProvider<int>>.internal(
-  orderQuantity,
-  name: r'orderQuantityProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$orderQuantityHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
-
-typedef OrderQuantityRef = AutoDisposeProviderRef<StateProvider<int>>;
 String _$detailViewModelHash() => r'77d6217bc63188abce0239f1a0b98de31268ada5';
 
 /// See also [DetailViewModel].

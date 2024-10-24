@@ -24,9 +24,7 @@ Stream<int> reviewIndexTimer(ReviewIndexTimerRef ref,{required int reviewsLength
   }
 }
 
-StateProvider<int> orderQuantity(OrderQuantityRef ref) {
-  return StateProvider((ref) => 0);
-}
+final orderQuantityProvider = StateProvider.autoDispose<int>((ref) => 1);
 
 @riverpod
 class DetailViewModel extends _$DetailViewModel {

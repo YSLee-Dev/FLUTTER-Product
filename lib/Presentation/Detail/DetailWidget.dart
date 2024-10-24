@@ -246,66 +246,73 @@ class _DetailWidgetState extends ConsumerState<DetailWidget> {
                           showModalBottomSheet(
                             context: context,
                             builder: (context) {
-                              return CommonMainWidget(
-                                isInScaffold: false ,
-                                title: 'Add to Cart',
-                                isBackIconShow: false,
-                                backgroundColor: Colors.white,
-                                borderRadius: BorderRadius.circular(15),
-                                widget: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    SizedBox(height: 10,),
-                                    Container(
-                                      decoration: BoxDecoration(color: Colors.black12, borderRadius: BorderRadius.circular(15)),
-                                      padding: EdgeInsets.all(15),
-                                      child: Column(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          CommonText(text: "${_provider.title}", fontSize: 18, fontWeight: FontWeight.bold),
-                                          SizedBox(height: 15,),
-                                          Row(
-                                            children: [
-                                              ElevatedButton(
-                                                  style:  ElevatedButton.styleFrom(backgroundColor: Colors.black),
-                                                  onPressed: () {
+                             return Consumer(
+                               builder: (context, ref, _) {
+                                 final _orderQuantity = ref.watch(orderQuantityProvider);
+                                 return CommonMainWidget(
+                                   isInScaffold: false ,
+                                   title: 'Add to Cart',
+                                   isBackIconShow: false,
+                                   backgroundColor: Colors.white,
+                                   borderRadius: BorderRadius.circular(15),
+                                   widget: Column(
+                                     mainAxisSize: MainAxisSize.min,
+                                     children: [
+                                       SizedBox(height: 10,),
+                                       Container(
+                                         decoration: BoxDecoration(color: Colors.black12, borderRadius: BorderRadius.circular(15)),
+                                         padding: EdgeInsets.all(15),
+                                         child: Column(
+                                           mainAxisSize: MainAxisSize.min,
+                                           children: [
+                                             CommonText(text: "${_provider.title}", fontSize: 18, fontWeight: FontWeight.bold),
+                                             SizedBox(height: 15,),
+                                             Row(
+                                               children: [
+                                                 ElevatedButton(
+                                                     style:  ElevatedButton.styleFrom(backgroundColor: Colors.black),
+                                                     onPressed: () {
+                                                       if (_orderQuantity <= 1) {return;}
+                                                       ref.read(orderQuantityProvider.notifier).update((state) => state - 1);
+                                                     },
+                                                     child: CommonText(text: "-", fontSize: 18, fontWeight: FontWeight.bold, fontColor: Colors.white,)
+                                                 ),
+                                                 SizedBox(width: 15,),
+                                                 CommonText(text: "${_orderQuantity}", fontSize: 20, fontWeight: FontWeight.bold,),
+                                                 SizedBox(width: 15,),
+                                                 ElevatedButton(
+                                                     style:  ElevatedButton.styleFrom(backgroundColor: Colors.white),
+                                                     onPressed: () {
+                                                       if (_orderQuantity >= _provider.stock) {return;}
+                                                       ref.read(orderQuantityProvider.notifier).update((state) => state + 1);
+                                                     },
+                                                     child: CommonText(text: "+", fontSize: 18, fontWeight: FontWeight.bold)
+                                                 ),
+                                                 Expanded(child: CommonText(text: "${(_provider.price! * _orderQuantity).toStringAsFixed(2)}\$", fontSize: 18, fontWeight: FontWeight.bold, textAlign: TextAlign.right,),)
+                                               ],
+                                             )
+                                           ],
+                                         ),
+                                       ),
+                                       SizedBox(height: 20,),
+                                       Container(
+                                         width: _screenWidth,
+                                         height: 50,
+                                         child: ElevatedButton(
+                                             style:  ElevatedButton.styleFrom(backgroundColor: Colors.black),
+                                             onPressed: () {
 
-                                                  },
-                                                  child: CommonText(text: "-", fontSize: 18, fontWeight: FontWeight.bold, fontColor: Colors.white,)
-                                              ),
-                                              SizedBox(width: 15,),
-                                              CommonText(text: "1", fontSize: 20, fontWeight: FontWeight.bold,),
-                                              SizedBox(width: 15,),
-                                              ElevatedButton(
-                                                  style:  ElevatedButton.styleFrom(backgroundColor: Colors.white),
-                                                  onPressed: () {
-
-                                                  },
-                                                  child: CommonText(text: "+", fontSize: 18, fontWeight: FontWeight.bold)
-                                              ),
-                                              Expanded(child: CommonText(text: "${(_provider.price! * 1).toStringAsFixed(2)}\$", fontSize: 18, fontWeight: FontWeight.bold, textAlign: TextAlign.right,),)
-                                            ],
-                                          )
-                                        ],
-                                      ),
-                                    ),
-                                    SizedBox(height: 20,),
-                                    Container(
-                                      width: _screenWidth,
-                                      height: 50,
-                                      child: ElevatedButton(
-                                          style:  ElevatedButton.styleFrom(backgroundColor: Colors.black),
-                                          onPressed: () {
-
-                                          },
-                                          child: CommonText(text: "Add to Cart", fontSize: 18, fontWeight: FontWeight.bold, fontColor: Colors.white)
-                                      ),
-                                    ),
-                                    SizedBox(height: 30,),
-                                  ],
-                                ),
-                              );
-                            },
+                                             },
+                                             child: CommonText(text: "Add to Cart", fontSize: 18, fontWeight: FontWeight.bold, fontColor: Colors.white)
+                                         ),
+                                       ),
+                                       SizedBox(height: 30,),
+                                     ],
+                                   ),
+                                 );
+                               }
+                             );
+                            }
                           );
                         },
                         child: CommonText(text: "Add to Cart", fontSize: 18, fontWeight: FontWeight.bold, fontColor: Colors.white)
