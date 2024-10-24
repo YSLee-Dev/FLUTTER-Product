@@ -21,7 +21,6 @@ class _DetailWidgetState extends ConsumerState<DetailWidget> {
   late final PageController _imagePageController;
   late final PageController _reviewsPageController;
   late double _screenWidth = MediaQuery.of(context).size.width;
-  late final StreamSubscription<int>? _indexStream;
 
   bool _imageWidgetLeftArrowisHideen = true;
   bool _imageWidgetRightArrowisHideen = false;
@@ -54,7 +53,6 @@ class _DetailWidgetState extends ConsumerState<DetailWidget> {
   void dispose() {
     _imagePageController.dispose();
     _reviewsPageController.dispose();
-    _indexStream?.cancel();
     super.dispose();
   }
 
@@ -76,252 +74,249 @@ class _DetailWidgetState extends ConsumerState<DetailWidget> {
       },
     );
 
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: CommonMainWidget(
-          title: "Detail Product",
-          isBackIconShow: true,
-          action: () {
-            Navigator.pop(context);
-          },
-          widget: Stack(
-            alignment: Alignment.bottomCenter,
+    return CommonMainWidget(
+      title: "Detail Product",
+      isBackIconShow: true,
+      action: () {
+        Navigator.pop(context);
+      },
+      widget: Stack(
+        alignment: Alignment.bottomCenter,
+        children: [
+          ListView(
             children: [
-              ListView(
-                children: [
-                  SizedBox(
-                      height: 200,
-                      child: Stack(
-                        alignment: Alignment.bottomCenter,
-                        children: [
-                          PageView.builder(
-                              scrollDirection: Axis.horizontal,
-                        itemCount: _provider.images?.length ?? 0,
-                              controller: _imagePageController,
-                              itemBuilder: (context, index) {
-                                return Stack(
-                                    alignment: Alignment.center,
-                                    children: [
-                                      Image.network(
-                                          _provider.images![index], width: _screenWidth, height: 200,
-                                          loadingBuilder: (context, child, loadingProgress) {
-                                            if(loadingProgress == null) {return child;}
-                                            return CircularProgressIndicator();
-                                          }
-                                      ),
-                                    ]
-                                );
-                              }
-                          ),
-                          if (!_imageWidgetLeftArrowisHideen)
-                            Container(
-                              alignment: Alignment.centerLeft,
-                              child: CommonText(text: "◀", fontSize: 25, fontWeight: FontWeight.w600, fontColor: Colors.black87)
-                            ),
-                          if (!_imageWidgetRightArrowisHideen && (_provider.images?.length ?? 0) >= 2)
-                            Container(
-                              alignment: Alignment.centerRight,
-                              child: CommonText(text: "▶", fontSize: 25, fontWeight: FontWeight.w600, fontColor: Colors.black87)
-                            )
-                        ],
-                      )
-                  ),
-                  SizedBox(height: 5,),
-                  Stack(
-                    alignment: Alignment.centerLeft,
+              SizedBox(
+                  height: 200,
+                  child: Stack(
+                    alignment: Alignment.bottomCenter,
                     children: [
-                      Container(
-                        decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(15)), color: Colors.black12),
-                        width: _screenWidth,
-                        height: 20,
-                      ),
-                      Container(
-                        decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(15)), color: Colors.black87),
-                        width: _screenWidth - (_screenWidth / max(((_provider.images?.length ?? 1) - 1), 1) * max((((_provider.images?.length ?? 1) - 1) - _nowPage), 0)),
-                        height: 20,
-                      )
-                    ],
-                  ),
-                  SizedBox(height: 20,),
-                  Stack(
-                    alignment: Alignment.centerLeft,
-                    children: [
-                      Container(
-                        decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(15)), color: Color(0xfffcffcc),),
-                        width: 100,
-                        height: 50,
-                      ),
-                      CommonText(text: "${_provider.title}", fontSize: 21, fontWeight: FontWeight.bold, maxLine: 2,)
-                    ],
-                  ),
-                  CommonText(text: '${_provider.brand ?? 'Depends on destination'}', fontSize: 16,),
-                  SizedBox(height: 20,),
-                  Container(
-                    height: 30,
-                    child: ListView.builder(
-                        scrollDirection: Axis.horizontal,
-                        itemCount: _provider.tags?.length ?? 0,
-                        itemBuilder: (builder, index) {
-                          return Row(
-                            children: [
-                              Container(
-                                  decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(15)), color: Colors.black45),
-                                  alignment: Alignment.center,
-                                  padding: EdgeInsets.only(left: 15, right: 15),
-                                  child: CommonText(text: "${_provider.tags![index]}", fontSize: 14, fontColor: Colors.white)
-                              ),
-                              SizedBox(width: 10,)
-                            ],
-                          );
-                        }
-                    ),
-                  ),
-                  SizedBox(height: 20),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text("${((_provider.price ?? 0.0) / ((100 - (_provider.discountPercentage ?? 0.0)) / 100)).toStringAsFixed(2)}\$",
-                        style: TextStyle(decoration: TextDecoration.lineThrough, fontSize: 17),
-                      ),
-                      Row(
-                        children: [
-                          CommonText(text: '${_provider.discountPercentage}%', fontSize: 23, fontWeight: FontWeight.bold, fontColor: Colors.redAccent,),
-                          SizedBox(width: 10,),
-                          CommonText(text: '${_provider.price}\$ ', fontSize: 23, fontWeight: FontWeight.bold,)
-                        ],
-                      )
-                    ],
-                  ),
-                  SizedBox(height: 20,),
-                  CommonText(text: "Reviews →", fontSize: 21, fontWeight: FontWeight.bold),
-                  SizedBox(height: 5,),
-                  Container(
-                      decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(15)), border: Border.all(color: Colors.black45, width: 1)),
-                      height: 60,
-                      child: PageView.builder(
-                          controller: _reviewsPageController,
-                          scrollDirection: Axis.vertical,
-                          itemCount: _provider.reviews?.length ?? 0,
-                          onPageChanged: (index) {
-
-                          },
+                      PageView.builder(
+                          scrollDirection: Axis.horizontal,
+                          itemCount: _provider.images?.length ?? 0,
+                          controller: _imagePageController,
                           itemBuilder: (context, index) {
-                            return Container(
-                              width: _screenWidth,
-                              padding: EdgeInsets.only(left: 15, right: 15),
-                              height: 60,
-                              child: Row(
+                            return Stack(
+                                alignment: Alignment.center,
                                 children: [
-                                  CommonText(text: '🧑🏻 ', fontSize: 23),
-                                  CommonText(text: '${_provider.reviews![index].name}', fontSize: 15),
-                                  SizedBox(width: 10),
-                                  Flexible(child: CommonText(text: '${_provider.reviews![index].comment}', fontSize: 15, fontWeight: FontWeight.w600,))
-                                ],
-                              ),
+                                  Image.network(
+                                      _provider.images![index], width: _screenWidth, height: 200,
+                                      loadingBuilder: (context, child, loadingProgress) {
+                                        if(loadingProgress == null) {return child;}
+                                        return CircularProgressIndicator();
+                                      }
+                                  ),
+                                ]
                             );
                           }
-                      )
-                  ),
-                  SizedBox(height: 20,),
-                  CommonText(text: "Product description", fontSize: 21, fontWeight: FontWeight.bold),
-                  SizedBox(height: 5,),
+                      ),
+                      if (!_imageWidgetLeftArrowisHideen)
+                        Container(
+                            alignment: Alignment.centerLeft,
+                            child: CommonText(text: "◀", fontSize: 25, fontWeight: FontWeight.w600, fontColor: Colors.black87)
+                        ),
+                      if (!_imageWidgetRightArrowisHideen && (_provider.images?.length ?? 0) >= 2)
+                        Container(
+                            alignment: Alignment.centerRight,
+                            child: CommonText(text: "▶", fontSize: 25, fontWeight: FontWeight.w600, fontColor: Colors.black87)
+                        )
+                    ],
+                  )
+              ),
+              SizedBox(height: 5,),
+              Stack(
+                alignment: Alignment.centerLeft,
+                children: [
                   Container(
-                    padding: EdgeInsets.all(15),
-                    decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(15)), border: Border.all(color: Colors.black45, width: 1)),
-                    child: CommonText(text: "${_provider.description}", fontSize: 15, maxLine: 10000)
+                    decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(15)), color: Colors.black12),
+                    width: _screenWidth,
+                    height: 20,
                   ),
-                  SizedBox(height: 100,) // 여백
+                  Container(
+                    decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(15)), color: Colors.black87),
+                    width: _screenWidth - (_screenWidth / max(((_provider.images?.length ?? 1) - 1), 1) * max((((_provider.images?.length ?? 1) - 1) - _nowPage), 0)),
+                    height: 20,
+                  )
                 ],
               ),
-              Container(
-                width: _screenWidth,
-                height: 90,
-                padding: EdgeInsets.only(top: 10),
-                decoration: BoxDecoration(color: Colors.white),
-                child: Column(
-                  children: [
-                    CommonText(text: "Store: ${_provider.stock}", fontSize: 15, fontWeight: FontWeight.bold,),
-                    SizedBox(height: 10,),
-                    Expanded(child: Container(
-                        width: _screenWidth,
-                        child: ElevatedButton(
-                            style:  ElevatedButton.styleFrom(backgroundColor: Colors.black),
-                            onPressed: () {
-                              showModalBottomSheet(
-                                context: context,
-                                builder: (context) {
-                                  return CommonMainWidget(
-                                    isInScaffold: false ,
-                                    title: 'Add to Cart',
-                                    isBackIconShow: false,
-                                    backgroundColor: Colors.white,
-                                    borderRadius: BorderRadius.circular(15),
-                                    widget: Column(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        SizedBox(height: 10,),
-                                        Container(
-                                          decoration: BoxDecoration(color: Colors.black12, borderRadius: BorderRadius.circular(15)),
-                                          padding: EdgeInsets.all(15),
-                                          child: Column(
-                                            mainAxisSize: MainAxisSize.min,
-                                            children: [
-                                              CommonText(text: "${_provider.title}", fontSize: 18, fontWeight: FontWeight.bold),
-                                              SizedBox(height: 15,),
-                                              Row(
-                                                children: [
-                                                  ElevatedButton(
-                                                      style:  ElevatedButton.styleFrom(backgroundColor: Colors.black),
-                                                      onPressed: () {
-
-                                                      },
-                                                      child: CommonText(text: "-", fontSize: 18, fontWeight: FontWeight.bold, fontColor: Colors.white,)
-                                                  ),
-                                                  SizedBox(width: 15,),
-                                                  CommonText(text: "1", fontSize: 20, fontWeight: FontWeight.bold,),
-                                                  SizedBox(width: 15,),
-                                                  ElevatedButton(
-                                                      style:  ElevatedButton.styleFrom(backgroundColor: Colors.white),
-                                                      onPressed: () {
-
-                                                      },
-                                                      child: CommonText(text: "+", fontSize: 18, fontWeight: FontWeight.bold)
-                                                  ),
-                                                  Expanded(child: CommonText(text: "${(_provider.price! * 1).toStringAsFixed(2)}\$", fontSize: 18, fontWeight: FontWeight.bold, textAlign: TextAlign.right,),)
-                                                ],
-                                              )
-                                            ],
-                                          ),
-                                        ),
-                                        SizedBox(height: 20,),
-                                        Container(
-                                          width: _screenWidth,
-                                          height: 50,
-                                          child: ElevatedButton(
-                                              style:  ElevatedButton.styleFrom(backgroundColor: Colors.black),
-                                              onPressed: () {
-
-                                              },
-                                              child: CommonText(text: "Add to Cart", fontSize: 18, fontWeight: FontWeight.bold, fontColor: Colors.white)
-                                          ),
-                                        ),
-                                        SizedBox(height: 30,),
-                                      ],
-                                    ),
-                                  );
-                                },
-                              );
-                            },
-                            child: CommonText(text: "Add to Cart", fontSize: 18, fontWeight: FontWeight.bold, fontColor: Colors.white)
-                        ),
-                      )
-                    )
-                  ],
-                )
+              SizedBox(height: 20,),
+              Stack(
+                alignment: Alignment.centerLeft,
+                children: [
+                  Container(
+                    decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(15)), color: Color(0xfffcffcc),),
+                    width: 100,
+                    height: 50,
+                  ),
+                  CommonText(text: "${_provider.title}", fontSize: 21, fontWeight: FontWeight.bold, maxLine: 2,)
+                ],
               ),
+              CommonText(text: '${_provider.brand ?? 'Depends on destination'}', fontSize: 16,),
+              SizedBox(height: 20,),
+              Container(
+                height: 30,
+                child: ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: _provider.tags?.length ?? 0,
+                    itemBuilder: (builder, index) {
+                      return Row(
+                        children: [
+                          Container(
+                              decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(15)), color: Colors.black45),
+                              alignment: Alignment.center,
+                              padding: EdgeInsets.only(left: 15, right: 15),
+                              child: CommonText(text: "${_provider.tags![index]}", fontSize: 14, fontColor: Colors.white)
+                          ),
+                          SizedBox(width: 10,)
+                        ],
+                      );
+                    }
+                ),
+              ),
+              SizedBox(height: 20),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text("${((_provider.price ?? 0.0) / ((100 - (_provider.discountPercentage ?? 0.0)) / 100)).toStringAsFixed(2)}\$",
+                    style: TextStyle(decoration: TextDecoration.lineThrough, fontSize: 17),
+                  ),
+                  Row(
+                    children: [
+                      CommonText(text: '${_provider.discountPercentage}%', fontSize: 23, fontWeight: FontWeight.bold, fontColor: Colors.redAccent,),
+                      SizedBox(width: 10,),
+                      CommonText(text: '${_provider.price}\$ ', fontSize: 23, fontWeight: FontWeight.bold,)
+                    ],
+                  )
+                ],
+              ),
+              SizedBox(height: 20,),
+              CommonText(text: "Reviews →", fontSize: 21, fontWeight: FontWeight.bold),
+              SizedBox(height: 5,),
+              Container(
+                  decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(15)), border: Border.all(color: Colors.black45, width: 1)),
+                  height: 60,
+                  child: PageView.builder(
+                      controller: _reviewsPageController,
+                      scrollDirection: Axis.vertical,
+                      itemCount: _provider.reviews?.length ?? 0,
+                      onPageChanged: (index) {
+
+                      },
+                      itemBuilder: (context, index) {
+                        return Container(
+                          width: _screenWidth,
+                          padding: EdgeInsets.only(left: 15, right: 15),
+                          height: 60,
+                          child: Row(
+                            children: [
+                              CommonText(text: '🧑🏻 ', fontSize: 23),
+                              CommonText(text: '${_provider.reviews![index].name}', fontSize: 15),
+                              SizedBox(width: 10),
+                              Flexible(child: CommonText(text: '${_provider.reviews![index].comment}', fontSize: 15, fontWeight: FontWeight.w600,))
+                            ],
+                          ),
+                        );
+                      }
+                  )
+              ),
+              SizedBox(height: 20,),
+              CommonText(text: "Product description", fontSize: 21, fontWeight: FontWeight.bold),
+              SizedBox(height: 5,),
+              Container(
+                  padding: EdgeInsets.all(15),
+                  decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(15)), border: Border.all(color: Colors.black45, width: 1)),
+                  child: CommonText(text: "${_provider.description}", fontSize: 15, maxLine: 10000)
+              ),
+              SizedBox(height: 100,) // 여백
             ],
           ),
-      )
+          Container(
+              width: _screenWidth,
+              height: 90,
+              padding: EdgeInsets.only(top: 10),
+              decoration: BoxDecoration(color: Colors.white),
+              child: Column(
+                children: [
+                  CommonText(text: "Store: ${_provider.stock}", fontSize: 15, fontWeight: FontWeight.bold,),
+                  SizedBox(height: 10,),
+                  Expanded(child: Container(
+                    width: _screenWidth,
+                    child: ElevatedButton(
+                        style:  ElevatedButton.styleFrom(backgroundColor: Colors.black),
+                        onPressed: () {
+                          showModalBottomSheet(
+                            context: context,
+                            builder: (context) {
+                              return CommonMainWidget(
+                                isInScaffold: false ,
+                                title: 'Add to Cart',
+                                isBackIconShow: false,
+                                backgroundColor: Colors.white,
+                                borderRadius: BorderRadius.circular(15),
+                                widget: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    SizedBox(height: 10,),
+                                    Container(
+                                      decoration: BoxDecoration(color: Colors.black12, borderRadius: BorderRadius.circular(15)),
+                                      padding: EdgeInsets.all(15),
+                                      child: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          CommonText(text: "${_provider.title}", fontSize: 18, fontWeight: FontWeight.bold),
+                                          SizedBox(height: 15,),
+                                          Row(
+                                            children: [
+                                              ElevatedButton(
+                                                  style:  ElevatedButton.styleFrom(backgroundColor: Colors.black),
+                                                  onPressed: () {
+
+                                                  },
+                                                  child: CommonText(text: "-", fontSize: 18, fontWeight: FontWeight.bold, fontColor: Colors.white,)
+                                              ),
+                                              SizedBox(width: 15,),
+                                              CommonText(text: "1", fontSize: 20, fontWeight: FontWeight.bold,),
+                                              SizedBox(width: 15,),
+                                              ElevatedButton(
+                                                  style:  ElevatedButton.styleFrom(backgroundColor: Colors.white),
+                                                  onPressed: () {
+
+                                                  },
+                                                  child: CommonText(text: "+", fontSize: 18, fontWeight: FontWeight.bold)
+                                              ),
+                                              Expanded(child: CommonText(text: "${(_provider.price! * 1).toStringAsFixed(2)}\$", fontSize: 18, fontWeight: FontWeight.bold, textAlign: TextAlign.right,),)
+                                            ],
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                    SizedBox(height: 20,),
+                                    Container(
+                                      width: _screenWidth,
+                                      height: 50,
+                                      child: ElevatedButton(
+                                          style:  ElevatedButton.styleFrom(backgroundColor: Colors.black),
+                                          onPressed: () {
+
+                                          },
+                                          child: CommonText(text: "Add to Cart", fontSize: 18, fontWeight: FontWeight.bold, fontColor: Colors.white)
+                                      ),
+                                    ),
+                                    SizedBox(height: 30,),
+                                  ],
+                                ),
+                              );
+                            },
+                          );
+                        },
+                        child: CommonText(text: "Add to Cart", fontSize: 18, fontWeight: FontWeight.bold, fontColor: Colors.white)
+                    ),
+                  )
+                  )
+                ],
+              )
+          ),
+        ],
+      ),
     );
   }
 }
