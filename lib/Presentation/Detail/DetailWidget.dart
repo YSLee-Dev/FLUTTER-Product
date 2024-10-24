@@ -241,9 +241,10 @@ class _DetailWidgetState extends ConsumerState<DetailWidget> {
                   Expanded(child: Container(
                     width: _screenWidth,
                     child: ElevatedButton(
-                        style:  ElevatedButton.styleFrom(backgroundColor: Colors.black),
-                        onPressed: () {
-                          showModalBottomSheet(
+                        style:  ElevatedButton.styleFrom(backgroundColor: _provider.stock <= 0 ? Colors.black38 :Colors.black),
+                        onPressed: () async {
+                          if (_provider.stock <= 0) {return null;}
+                          final sheetValue = showModalBottomSheet(
                             context: context,
                             builder: (context) {
                              return Consumer(
@@ -301,7 +302,7 @@ class _DetailWidgetState extends ConsumerState<DetailWidget> {
                                          child: ElevatedButton(
                                              style:  ElevatedButton.styleFrom(backgroundColor: Colors.black),
                                              onPressed: () {
-
+                                               Navigator.pop(context, _orderQuantity);
                                              },
                                              child: CommonText(text: "Add to Cart", fontSize: 18, fontWeight: FontWeight.bold, fontColor: Colors.white)
                                          ),
@@ -314,6 +315,22 @@ class _DetailWidgetState extends ConsumerState<DetailWidget> {
                              );
                             }
                           );
+                          final addCartQuantity = await sheetValue;
+                          if (addCartQuantity != null) {
+                            ProductModel now = _provider;
+                            now.stock = now.stock - addCartQuantity as int;
+                            ref.read(detailViewModelProvider.notifier).updateModel(now);
+
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                  content: Text("Added ${addCartQuantity! as int} items to your cart"),
+                                  behavior: SnackBarBehavior.floating,
+                                  backgroundColor: Colors.black,
+                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+                                  duration: Duration(milliseconds: 2000),
+                              )
+                            );
+                          }
                         },
                         child: CommonText(text: "Add to Cart", fontSize: 18, fontWeight: FontWeight.bold, fontColor: Colors.white)
                     ),
