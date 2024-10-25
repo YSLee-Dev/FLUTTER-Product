@@ -1,57 +1,36 @@
 import 'dart:ffi';
 
-class ProductModel {
-  int id;
-  String title;
-  String description;
-  double? price;
-  double? discountPercentage;
-  String? thumbnail;
-  List<String>? tags;
-  String? brand;
-  int stock;
-  List<ProductReviewModel>? reviews;
-  List<String>? images;
+import 'package:freezed_annotation/freezed_annotation.dart';
+part 'ProductModel.freezed.dart';
+part 'ProductModel.g.dart';
 
-  ProductModel({
-    required int this.id, required String this.title,
-    required String this.description, double? this.price, double? this.discountPercentage,
-    String? this.thumbnail, List<String>? this.tags,
-    String? this.brand, required this.stock,
-    List<ProductReviewModel>? this.reviews, List<String>? this.images
-  });
+@freezed
+class ProductModel with _$ProductModel {
+  factory ProductModel({
+    required int id,
+    required String title,
+    required String description,
+    double? price,
+    double? discountPercentage,
+    String? thumbnail,
+    List<String>? tags,
+    String? brand,
+    required int stock,
+    List<ProductReviewModel>? reviews,
+    List<String>? images,
+  }) = _ProductModel;
 
-  factory ProductModel.fromJson(Map<String, dynamic> json) {
-    return ProductModel(
-        id: json['id'],
-        title: json['title'],
-        description: json['description'],
-        price: json['price'],
-        discountPercentage: double.parse(json['discountPercentage'].toString()),
-        thumbnail: json['thumbnail'],
-        tags: List<String>.from(json['tags' ?? []]),
-        brand: json['brand'],
-        stock: json['stock'],
-        reviews: (json['reviews'] as List).map ((data) {
-          return ProductReviewModel.fromJson(data);
-        }).toList(),
-       images: List<String>.from(json['images' ?? []])
-    );
-  }
+  factory ProductModel.fromJson(Map<String, dynamic> json) =>
+      _$ProductModelFromJson(json);
 }
 
-class ProductReviewModel {
-  String comment;
-  String name;
-  String date;
+@freezed
+class ProductReviewModel with _$ProductReviewModel {
+  factory ProductReviewModel({
+    required String comment,
+    required String name,
+    required String date,
+  }) = _ProductReviewModel;
 
-  ProductReviewModel({required this.comment, required this.name, required this.date});
-
-  factory ProductReviewModel.fromJson(Map<String, dynamic> json) {
-    return ProductReviewModel(
-        comment: json['comment'],
-        name: json['reviewerName'],
-        date: json['date']
-    );
-  }
+  factory ProductReviewModel.fromJson(Map<String, dynamic> json) => _$ProductReviewModelFromJson(json);
 }

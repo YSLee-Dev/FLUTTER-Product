@@ -317,7 +317,7 @@ class _DetailWidgetState extends ConsumerState<DetailWidget> {
                           );
                           final addCartQuantity = await sheetValue;
                           if (addCartQuantity != null) {
-                            _provider.stock -= addCartQuantity as int;
+                            ref.read(detailViewModelProvider.notifier).updateModel(_provider.copyWith(stock: _provider.stock - addCartQuantity as int));
 
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(

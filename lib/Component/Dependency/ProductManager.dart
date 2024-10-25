@@ -25,6 +25,7 @@ class ProductManager implements IProductManager {
         decoder: (context) {
           final product = context["products"];
           final decondingData = (product as List).map ((v) {
+            print(v);
             return ProductModel.fromJson(v);
           });
           return decondingData.toList();
