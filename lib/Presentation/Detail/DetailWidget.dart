@@ -6,6 +6,7 @@ import 'package:flutter_product/Component/CommonWidget/CommonMainWidget.dart';
 import 'package:flutter_product/Component/CommonWidget/CommonText.dart';
 import 'package:flutter_product/Component/Model/ProductModel.dart';
 import 'package:flutter_product/Presentation/Detail/DetailViewModel.dart';
+import 'package:flutter_product/Presentation/Review/ReviewWidget.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class DetailWidget extends ConsumerStatefulWidget {
@@ -189,7 +190,12 @@ class _DetailWidgetState extends ConsumerState<DetailWidget> {
                 ],
               ),
               SizedBox(height: 20,),
-              CommonText(text: "Reviews →", fontSize: 21, fontWeight: FontWeight.bold),
+              GestureDetector(
+                onTap: () {
+                  Navigator.pushNamed(context, ReviewWidget.reviewWidgetRoutename, arguments: _provider.reviews);
+                },
+                child: CommonText(text: "Reviews →", fontSize: 21, fontWeight: FontWeight.bold),
+              ),
               SizedBox(height: 5,),
               Container(
                   decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(15)), border: Border.all(color: Colors.black45, width: 1)),

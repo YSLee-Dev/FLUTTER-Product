@@ -7,7 +7,7 @@ part 'ReviewViewModel.g.dart';
 
 @riverpod
 class ReviewViewModel extends _$ReviewViewModel {
-  List<ProductReviewModel> _sendedReview = [];
+  List<ProductReviewModel> _sendedReview = [ProductReviewModel(comment: "", name: "", date: "")]; // 임시 값
 
   @override
   List<ProductReviewModel> build() {
