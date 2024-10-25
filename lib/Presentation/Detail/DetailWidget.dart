@@ -285,7 +285,7 @@ class _DetailWidgetState extends ConsumerState<DetailWidget> {
                                                      style:  ElevatedButton.styleFrom(backgroundColor: Colors.white),
                                                      onPressed: () {
                                                        if (_orderQuantity >= _provider.stock) {return;}
-                                                       ref.read(orderQuantityProvider.notifier).update((state) => state + 1);
+                                                       ref.read(orderQuantityProvider.notifier).state += 1;
                                                      },
                                                      child: CommonText(text: "+", fontSize: 18, fontWeight: FontWeight.bold)
                                                  ),
@@ -317,9 +317,7 @@ class _DetailWidgetState extends ConsumerState<DetailWidget> {
                           );
                           final addCartQuantity = await sheetValue;
                           if (addCartQuantity != null) {
-                            ProductModel now = _provider;
-                            now.stock = now.stock - addCartQuantity as int;
-                            ref.read(detailViewModelProvider.notifier).updateModel(now);
+                            _provider.stock -= addCartQuantity as int;
 
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
