@@ -75,6 +75,25 @@ class HomeRoute extends PageRouteInfo<void> {
 }
 
 /// generated route for
+/// [MainTabbarScreen]
+class MainTabbarRoute extends PageRouteInfo<void> {
+  const MainTabbarRoute({List<PageRouteInfo>? children})
+      : super(
+          MainTabbarRoute.name,
+          initialChildren: children,
+        );
+
+  static const String name = 'MainTabbarRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return const MainTabbarScreen();
+    },
+  );
+}
+
+/// generated route for
 /// [ReviewScreen]
 class ReviewRoute extends PageRouteInfo<ReviewRouteArgs> {
   ReviewRoute({

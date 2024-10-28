@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 
 import '../../Presentation/Detail/DetailScreen.dart';
 import '../../Presentation/Home/HomeScreen.dart';
+import '../../Presentation/MainTabbar/MainTabbarScreen.dart';
 import '../../Presentation/Review/ReviewScreen.dart';
 import '../Model/ProductModel.dart';
 
@@ -15,8 +16,9 @@ class AppRouter extends RootStackRouter {
 
   @override
   List<AutoRoute> get routes => [
-    AutoRoute(page: HomeRoute.page, initial: true),
-    AutoRoute(page: DetailRoute.page),
-    AutoRoute(page: ReviewRoute.page),
+    AutoRoute(page: MainTabbarRoute.page, initial: true, path: "/"),
+    AutoRoute(page: HomeRoute.page, path: '/home'),
+    AutoRoute(page: DetailRoute.page, path: '/detail'),
+    AutoRoute(page: ReviewRoute.page, path: '/detail/reviews'),
   ];
 }
