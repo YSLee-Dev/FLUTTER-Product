@@ -1,24 +1,26 @@
 import 'dart:async';
 import 'dart:math';
 
+import 'package:auto_route/annotations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_product/Component/CommonWidget/CommonMainWidget.dart';
 import 'package:flutter_product/Component/CommonWidget/CommonText.dart';
 import 'package:flutter_product/Component/Model/ProductModel.dart';
 import 'package:flutter_product/Presentation/Detail/DetailViewModel.dart';
-import 'package:flutter_product/Presentation/Review/ReviewWidget.dart';
+import 'package:flutter_product/Presentation/Review/ReviewScreen.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class DetailWidget extends ConsumerStatefulWidget {
+@RoutePage()
+class DetailScreen extends ConsumerStatefulWidget {
   static const String detailWidgetRoutename = "detailWidgetRoutename";
   final ProductModel sendedProductModel;
-  const DetailWidget({super.key, required this.sendedProductModel});
+  const DetailScreen({super.key, required this.sendedProductModel});
 
   @override
-  ConsumerState<DetailWidget> createState() => _DetailWidgetState();
+  ConsumerState<DetailScreen> createState() => _DetailScreenState();
 }
 
-class _DetailWidgetState extends ConsumerState<DetailWidget> {
+class _DetailScreenState extends ConsumerState<DetailScreen> {
   late final PageController _imagePageController;
   late final PageController _reviewsPageController;
   late double _screenWidth = MediaQuery.of(context).size.width;
@@ -192,7 +194,7 @@ class _DetailWidgetState extends ConsumerState<DetailWidget> {
               SizedBox(height: 20,),
               GestureDetector(
                 onTap: () {
-                  Navigator.pushNamed(context, ReviewWidget.reviewWidgetRoutename, arguments: _provider.reviews);
+                  Navigator.pushNamed(context, ReviewScreen.reviewWidgetRoutename, arguments: _provider.reviews);
                 },
                 child: CommonText(text: "Reviews →", fontSize: 21, fontWeight: FontWeight.bold),
               ),

@@ -1,21 +1,23 @@
+import 'package:auto_route/annotations.dart';
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_product/Component/CommonWidget/CommonMainWidget.dart';
-import 'package:flutter_product/Presentation/Detail/DetailWidget.dart';
+import 'package:flutter_product/Component/Router/app_router.dart';
+import 'package:flutter_product/Presentation/Detail/DetailScreen.dart';
 import 'package:flutter_product/Presentation/Home/HomeViewModel.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../Component/CommonWidget/CommonText.dart';
 
-class HomeWidget extends ConsumerStatefulWidget {
-  const HomeWidget({super.key});
-
-  static const homeWidgetRouteName = "homeWidgetRouteName";
+@RoutePage()
+class HomeScreen extends ConsumerStatefulWidget {
+  const HomeScreen({super.key});
 
   @override
-  ConsumerState createState() => _HomeWidgetState();
+  ConsumerState createState() => _HomeScreenState();
 }
 
-class _HomeWidgetState extends ConsumerState<HomeWidget> {
+class _HomeScreenState extends ConsumerState<HomeScreen> {
   late ScrollController _scrollController;
   bool _nowListShowTapped = true;
 
@@ -46,6 +48,7 @@ class _HomeWidgetState extends ConsumerState<HomeWidget> {
   @override
   Widget build(BuildContext context) {
     final _provider = ref.watch(homeViewModelProvider);
+    final _router = AutoRouter.of(context);
 
     return CommonMainWidget(
       title: "Home",
@@ -103,10 +106,7 @@ class _HomeWidgetState extends ConsumerState<HomeWidget> {
                 itemCount: _provider.value!.length,
                 itemBuilder: (context, index) {
                   return GestureDetector(
-                    onTap: () => Navigator.of(context).pushNamed(
-                      DetailWidget.detailWidgetRoutename,
-                      arguments: _provider.value![index],
-                    ),
+                    onTap: () => _router.push(DetailRoute(sendedProductModel:  _provider.value![index],)),
                     child: Container(
                       padding: EdgeInsets.symmetric(vertical: 10),
                       child: Row(
@@ -165,7 +165,7 @@ class _HomeWidgetState extends ConsumerState<HomeWidget> {
                 itemBuilder: (context, index) {
                   return GestureDetector(
                     onTap: () => Navigator.of(context).pushNamed(
-                      DetailWidget.detailWidgetRoutename,
+                      DetailScreen.detailWidgetRoutename,
                       arguments: _provider.value![index],
                     ),
                     child: Container(

@@ -1,3 +1,4 @@
+import 'package:auto_route/annotations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_product/Component/CommonWidget/CommonMainWidget.dart';
 import 'package:flutter_product/Component/CommonWidget/CommonText.dart';
@@ -6,17 +7,18 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../Component/Model/ProductModel.dart';
 
-class ReviewWidget extends ConsumerStatefulWidget {
+@RoutePage()
+class ReviewScreen extends ConsumerStatefulWidget {
   final List<ProductReviewModel> sendedReviewModelList;
   static const String reviewWidgetRoutename = "reviewWidgetRoutename";
 
-  const ReviewWidget({super.key, required this.sendedReviewModelList});
+  const ReviewScreen({super.key, required this.sendedReviewModelList});
 
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() => ReviewWidgetState();
+  ConsumerState<ConsumerStatefulWidget> createState() => ReviewScreenState();
 }
 
-class ReviewWidgetState extends ConsumerState<ReviewWidget> {
+class ReviewScreenState extends ConsumerState<ReviewScreen> {
 
   @override
   void initState() {
