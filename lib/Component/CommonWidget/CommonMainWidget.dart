@@ -7,10 +7,16 @@ class CommonMainWidget extends StatelessWidget {
   final bool _isBackIconShow;
   final Color _backGroundColor;
   final BorderRadius _borderRadius;
+  final List<BottomNavigationBarItem>_navigationBarItem;
   final Function()? _titleTappedAction;
 
-  CommonMainWidget({bool isInScaffold = true, required String title, required bool isBackIconShow, Color backgroundColor = Colors.white, BorderRadius borderRadius = BorderRadius.zero, Function()? action, required Widget widget})
-      : _isInScaffold = isInScaffold,  _widget = widget, _title = title, _isBackIconShow = isBackIconShow, _backGroundColor = backgroundColor, _borderRadius = borderRadius, _titleTappedAction = action;
+  CommonMainWidget({
+    bool isInScaffold = true, required String title, required bool isBackIconShow,
+    Color backgroundColor = Colors.white, BorderRadius borderRadius = BorderRadius.zero,
+    List<BottomNavigationBarItem> navigationBarItem = const <BottomNavigationBarItem>[], Function()? action, required Widget widget
+  })
+      : _isInScaffold = isInScaffold,  _widget = widget, _title = title, _isBackIconShow = isBackIconShow,
+        _backGroundColor = backgroundColor, _borderRadius = borderRadius, _navigationBarItem = navigationBarItem, _titleTappedAction = action;
 
   Widget _createWidget() {
    return Container(
@@ -41,6 +47,10 @@ class CommonMainWidget extends StatelessWidget {
           backgroundColor: _backGroundColor,
           body: SafeArea(child: _createWidget()
           ),
+          bottomNavigationBar: _navigationBarItem.length >= 2 ?   BottomNavigationBar(
+            items: _navigationBarItem,
+            backgroundColor: Colors.white,
+          ) : null,
         )
         : _createWidget();
   }
