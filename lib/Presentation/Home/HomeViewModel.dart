@@ -28,7 +28,7 @@ class HomeViewModel extends _$HomeViewModel {
   Future<List<ProductModel>> _requestProductList({int count = 10}) async {
     nowPage ++;
     print("${nowPage} ${count}");
-    state = AsyncLoading();
+    state =  AsyncLoading();
 
     return await _productManager.requestMainProduct(nowPage, count);
   }

@@ -2,10 +2,12 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:auto_route/annotations.dart';
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_product/Component/CommonWidget/CommonMainWidget.dart';
 import 'package:flutter_product/Component/CommonWidget/CommonText.dart';
 import 'package:flutter_product/Component/Model/ProductModel.dart';
+import 'package:flutter_product/Component/Router/app_router.dart';
 import 'package:flutter_product/Presentation/Detail/DetailViewModel.dart';
 import 'package:flutter_product/Presentation/Review/ReviewScreen.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -62,6 +64,7 @@ class _DetailScreenState extends ConsumerState<DetailScreen> {
   @override
   Widget build(BuildContext context) {
     final _provider = ref.watch(detailViewModelProvider);
+    final _router = AutoRouter.of(context);
 
     ref.listen<AsyncValue<int>>(
       reviewIndexTimerProvider(
@@ -194,7 +197,8 @@ class _DetailScreenState extends ConsumerState<DetailScreen> {
               SizedBox(height: 20,),
               GestureDetector(
                 onTap: () {
-                  Navigator.pushNamed(context, ReviewScreen.reviewWidgetRoutename, arguments: _provider.reviews);
+                  if (_provider.reviews == null ){return;}
+                  _router.push(ReviewRoute(sendedReviewModelList:  _provider.reviews!));
                 },
                 child: CommonText(text: "Reviews →", fontSize: 21, fontWeight: FontWeight.bold),
               ),
