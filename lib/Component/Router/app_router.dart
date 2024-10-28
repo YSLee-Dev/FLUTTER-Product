@@ -6,6 +6,7 @@ import '../../Presentation/Detail/DetailScreen.dart';
 import '../../Presentation/Home/HomeScreen.dart';
 import '../../Presentation/MainTabbar/MainTabbarScreen.dart';
 import '../../Presentation/Review/ReviewScreen.dart';
+import '../../Presentation/Search/SearchScreen.dart';
 import '../Model/ProductModel.dart';
 
 part 'app_router.gr.dart';
@@ -18,6 +19,7 @@ class AppRouter extends RootStackRouter {
   List<AutoRoute> get routes => [
     AutoRoute(page: MainTabbarRoute.page, initial: true, path: "/", children: [
       AutoRoute(page: HomeRoute.page, path: 'home'),
+      AutoRoute(page: SearchRoute.page, path: 'search'),
     ]),
     AutoRoute(page: DetailRoute.page, path: '/detail'),
     AutoRoute(page: ReviewRoute.page, path: '/detail/reviews'),

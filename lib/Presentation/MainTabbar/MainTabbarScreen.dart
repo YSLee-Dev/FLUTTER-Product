@@ -17,10 +17,12 @@ class MainTabbarScreenState extends State<MainTabbarScreen> {
   Widget build(BuildContext context) {
     return AutoTabsScaffold(
       routes: [
-        HomeRoute()
+        HomeRoute(),
+        SearchRoute()
       ],
       bottomNavigationBuilder: (_, tabRouter) {
         return  BottomNavigationBar(
+            fixedColor: Colors.black,
             backgroundColor: Colors.white,
             currentIndex: tabRouter.activeIndex,
             onTap: (index) {
