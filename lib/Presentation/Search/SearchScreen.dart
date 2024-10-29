@@ -3,16 +3,18 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_product/Component/CommonWidget/CommonMainWidget.dart';
 import 'package:flutter_product/Component/CommonWidget/CommonText.dart';
+import 'package:flutter_product/Presentation/Search/SearchViewModel.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 @RoutePage()
-class SearchScreen extends StatefulWidget {
+class SearchScreen extends ConsumerStatefulWidget {
   const SearchScreen({super.key});
 
   @override
-  State<SearchScreen> createState() => _SearchScreenState();
+  ConsumerState<SearchScreen> createState() => _SearchScreenState();
 }
 
-class _SearchScreenState extends State<SearchScreen> {
+class _SearchScreenState extends ConsumerState<SearchScreen> {
   bool _isSearching = false;
   bool _isAnimation = false;
   late TextEditingController _textEditingController;
@@ -21,9 +23,11 @@ class _SearchScreenState extends State<SearchScreen> {
   @override
   void initState() {
     super.initState();
-    _textEditingController = TextEditingController();
-    _textEditingController.addListener(() {
-
+    WidgetsBinding.instance.addPostFrameCallback((_){
+      _textEditingController = TextEditingController();
+      _textEditingController.addListener(() async {
+        ref.read(searchViewModelProvider.notifier).querySearch(query:  _textEditingController.text);
+      });
     });
   }
 
@@ -37,6 +41,7 @@ class _SearchScreenState extends State<SearchScreen> {
   @override
   Widget build(BuildContext context) {
     late final  _size = MediaQuery.of(context).size;
+    final _providerValue = ref.watch(searchViewModelProvider);
 
     return CommonMainWidget(
         title: _isAnimation ? "" : (_isSearching ? "" : "Search" ),
@@ -112,13 +117,14 @@ class _SearchScreenState extends State<SearchScreen> {
               ),
           ),
             SizedBox(height: _isSearching ? 0 : 25,),
+          if(_providerValue.value != null && _isSearching)
             Flexible(
                 child: Container(
                   padding: const EdgeInsets.only(left: 30, right: 30),
                   child:  ListView.builder(
-                      itemCount: 10,
+                      itemCount: _providerValue.value!.length,
                       itemBuilder: (context, index) {
-                        return CommonText(text: "$index", fontSize: 15);
+                        return CommonText(text: "${_providerValue.value![index].title}", fontSize: 15);
                       }
                   ),
                 )
