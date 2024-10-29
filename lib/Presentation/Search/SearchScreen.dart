@@ -16,6 +16,7 @@ class _SearchScreenState extends State<SearchScreen> {
   bool _isSearching = false;
   bool _isAnimation = false;
   late TextEditingController _textEditingController;
+  final _tfNode = FocusNode();
 
   @override
   void initState() {
@@ -29,6 +30,7 @@ class _SearchScreenState extends State<SearchScreen> {
   @override
   void dispose() {
     _textEditingController.dispose();
+    _tfNode.dispose();
     super.dispose();
   }
 
@@ -75,6 +77,11 @@ class _SearchScreenState extends State<SearchScreen> {
                 onTap: () {
                   setState(() {
                     _isSearching = !_isSearching;
+                    if (_isSearching) {
+                      Future.delayed(Duration(milliseconds: 300), () {
+                        FocusScope.of(context).requestFocus(_tfNode);
+                      });
+                    }
                   });
                 },
                 child:  Container(
@@ -91,6 +98,7 @@ class _SearchScreenState extends State<SearchScreen> {
                 height: 100,
                 alignment: Alignment.topLeft,
                 child: TextField(
+                  focusNode: _tfNode,
                   controller: _textEditingController,
                   style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   decoration: const InputDecoration(
