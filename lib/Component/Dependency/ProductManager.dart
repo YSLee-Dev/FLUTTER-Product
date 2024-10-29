@@ -20,19 +20,37 @@ class ProductManager implements IProductManager {
   @override
   Future<List<ProductModel>> requestMainProduct(int page, int count) async {
     Uri uri = Uri.https(
-        'dummyjson.com', 'products', {"limit": "10", "skip": "${page * 10}"});
-    final result =  await _networkManager!.requestData(
+        'dummyjson.com', 'products',
+        {"limit": "${count}", "skip": "${page * 10}"});
+    final result = await _networkManager!.requestData(
         decoder: (context) {
           final product = context["products"];
-          final decondingData = (product as List).map ((v) {
+          final decondingData = (product as List).map((v) {
             return ProductModel.fromJson(v);
           });
           return decondingData.toList();
         },
         urlString: uri.toString());
 
-  return result;
+    return result;
   }
 
-
+  @override
+  Future<List<ProductModel>> requestSearchProduct({required int page, required String query, int count = 10}) async {
+    Uri uri = Uri.https(
+        'dummyjson.com', 'products',
+        {"q": query, "limit": "${count}", "skip": "${page * 10}"}
+    );
+    final result = await _networkManager!.requestData(
+        decoder: (context) {
+          final product = context["products"];
+          final decondingData = (product as List).map((v) {
+            return ProductModel.fromJson(v);
+          });
+          return decondingData.toList();
+        },
+        urlString: uri.toString()
+    );
+    return result;
+  }
 }
