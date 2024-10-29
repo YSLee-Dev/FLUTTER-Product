@@ -38,7 +38,7 @@ class ProductManager implements IProductManager {
   @override
   Future<List<ProductModel>> requestSearchProduct({required int page, required String query, int count = 10}) async {
     Uri uri = Uri.https(
-        'dummyjson.com', 'products',
+        'dummyjson.com', 'products/search',
         {"q": query, "limit": "${count}", "skip": "${page * 10}"}
     );
     final result = await _networkManager!.requestData(
