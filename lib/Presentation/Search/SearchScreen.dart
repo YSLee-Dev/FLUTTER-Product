@@ -15,15 +15,20 @@ class SearchScreen extends StatefulWidget {
 class _SearchScreenState extends State<SearchScreen> {
   bool _isSearching = false;
   bool _isAnimation = false;
+  late TextEditingController _textEditingController;
 
   @override
   void initState() {
     super.initState();
+    _textEditingController = TextEditingController();
+    _textEditingController.addListener(() {
+
+    });
   }
 
   @override
   void dispose() {
-
+    _textEditingController.dispose();
     super.dispose();
   }
 
@@ -45,9 +50,13 @@ class _SearchScreenState extends State<SearchScreen> {
               duration: const Duration(milliseconds: 250),
               transitionBuilder: (widget, animation) {
                 animation.addListener(() {
-                  setState(() {
-                    if (_isAnimation != (!animation.isCompleted)) {
-                      _isAnimation = !animation.isCompleted;
+                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                    if(mounted) {
+                      setState(() {
+                        if (_isAnimation != (!animation.isCompleted)) {
+                          _isAnimation = !animation.isCompleted;
+                        }
+                      });
                     }
                   });
                 });
@@ -81,9 +90,10 @@ class _SearchScreenState extends State<SearchScreen> {
                 padding: const EdgeInsets.only(bottom: 50),
                 height: 100,
                 alignment: Alignment.topLeft,
-                child: const TextField(
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                  decoration: InputDecoration(
+                child: TextField(
+                  controller: _textEditingController,
+                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  decoration: const InputDecoration(
                       hintText: "Search for products",
                       hintStyle: TextStyle(fontWeight: FontWeight.bold, fontSize:  20),
                       border: UnderlineInputBorder(borderSide: BorderSide(color: Colors.black, width: 1.5)),
