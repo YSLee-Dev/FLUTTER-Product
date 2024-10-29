@@ -164,10 +164,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 itemCount: _provider.value!.length,
                 itemBuilder: (context, index) {
                   return GestureDetector(
-                    onTap: () => Navigator.of(context).pushNamed(
-                      DetailScreen.detailWidgetRoutename,
-                      arguments: _provider.value![index],
-                    ),
+                    onTap: () => _router.push(DetailRoute(sendedProductModel:  _provider.value![index],)),
                     child: Container(
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(15),
