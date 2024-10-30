@@ -3,6 +3,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_product/Component/CommonWidget/CommonMainWidget.dart';
 import 'package:flutter_product/Component/CommonWidget/CommonText.dart';
+import 'package:flutter_product/Component/Provider/SearchKeywordProvider.dart';
 import 'package:flutter_product/Component/Router/app_router.dart';
 import 'package:flutter_product/Presentation/Search/SearchViewModel.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -55,6 +56,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
     late final  _size = MediaQuery.of(context).size;
     final providerValue = ref.watch(searchViewModelProvider);
     final router = AutoRouter.of(context);
+    final searchKeywordProvider = ref.watch(searchKeywordProviderProvider);
 
     return CommonMainWidget(
         title: _isAnimation ? "" : (_isSearching ? "" : "Search" ),
@@ -116,6 +118,10 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                 height: 100,
                 alignment: Alignment.bottomLeft,
                 child: TextField(
+                  onSubmitted: (String value) {
+                    FocusScope.of(context).unfocus();
+                    ref.read(searchKeywordProviderProvider.notifier).addKeyword(keyword: value);
+                  },
                   focusNode: _tfNode,
                   controller: _textEditingController,
                   style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
@@ -129,7 +135,27 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                 ),
               ),
           ),
-            SizedBox(height: _isSearching ? 0 : 25,),
+           SizedBox(height: _isSearching ? 0 : 25,),
+          if(searchKeywordProvider.value != null && !_isSearching)
+          Flexible(
+            child: ListView.builder(
+                itemCount: searchKeywordProvider.value!.length,
+                itemBuilder: (context, index) {
+                  return GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        _isSearching = true;
+                        _textEditingController.text = searchKeywordProvider.value![index];
+                      });
+                    },
+                    child:  Container(
+                      padding: EdgeInsets.only(left: 20, right: 20, top: 7.5, bottom: 7.5),
+                      child: CommonText(text: searchKeywordProvider.value![index], fontSize: 18, fontWeight: FontWeight.w500,),
+                    ),
+                  );
+                }
+            )
+          ),
           if(providerValue.isLoading && _isSearching && providerValue.value!.isEmpty)
             const SizedBox(
               width: 50,
