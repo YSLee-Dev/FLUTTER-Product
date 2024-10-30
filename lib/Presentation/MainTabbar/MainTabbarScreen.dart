@@ -16,6 +16,7 @@ class MainTabbarScreenState extends State<MainTabbarScreen> {
   @override
   Widget build(BuildContext context) {
     return AutoTabsScaffold(
+      backgroundColor: Colors.white,
       routes: [
         HomeRoute(),
         SearchRoute()
