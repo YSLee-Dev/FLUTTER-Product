@@ -22,15 +22,15 @@ class SearchViewModel extends _$SearchViewModel {
   }
 
   void querySearch({required String query}) async {
-    if (query == "") {return;}
-
-    // 1초 동안 대기 후 가장 마지막 값을 검색합니다.
     _watingWord = query;
+
     if (_isWating) {return;}
     _isWating = true;
     _isEnd = false;
     state = const AsyncData([]);
     state = const AsyncLoading();
+
+    // 1초 동안 대기 후 가장 마지막 값을 검색합니다.
     await Future.delayed(Duration(seconds: 1));
 
     _nowPage = 0;
