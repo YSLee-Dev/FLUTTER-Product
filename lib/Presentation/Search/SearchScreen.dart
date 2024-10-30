@@ -20,8 +20,10 @@ class SearchScreen extends ConsumerStatefulWidget {
 class _SearchScreenState extends ConsumerState<SearchScreen> {
   bool _isSearching = false;
   bool _isAnimation = false;
-  late TextEditingController _textEditingController;
   final _tfNode = FocusNode();
+
+  late TextEditingController _textEditingController;
+  late ScrollController _scrollController;
 
   @override
   void initState() {
@@ -30,6 +32,13 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
       _textEditingController = TextEditingController();
       _textEditingController.addListener(() async {
         ref.read(searchViewModelProvider.notifier).querySearch(query:  _textEditingController.text);
+      });
+
+      _scrollController = ScrollController();
+      _scrollController.addListener((){
+        if (_scrollController.offset >= _scrollController.position.maxScrollExtent - 100 && !ref.read(searchViewModelProvider).isLoading) {
+          ref.read(searchViewModelProvider.notifier).morePageRequest();
+        }
       });
     });
   }
@@ -43,7 +52,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
 
   @override
   Widget build(BuildContext context) {
-    late final  size = MediaQuery.of(context).size;
+    late final  _size = MediaQuery.of(context).size;
     final providerValue = ref.watch(searchViewModelProvider);
     final router = AutoRouter.of(context);
 
@@ -76,7 +85,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                     child: AnimatedSize(
                         duration: const  Duration(milliseconds: 250),
                         child:  SizedBox(
-                          width: _isSearching ?size.width : size.width - 80,
+                          width: _isSearching ?_size.width : _size.width - 80,
                           child: FadeTransition(opacity: animation, child: widget,),
                         ),
                     )
@@ -121,7 +130,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
               ),
           ),
             SizedBox(height: _isSearching ? 0 : 25,),
-          if(providerValue.isLoading && _isSearching)
+          if(providerValue.isLoading && _isSearching && providerValue.value!.isEmpty)
             const SizedBox(
               width: 50,
                 height: 50,
@@ -129,11 +138,12 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                   valueColor:  AlwaysStoppedAnimation<Color> (Colors.white), backgroundColor: Colors.black, strokeWidth: 2,)
               ,
             ),
-          if(!providerValue.isLoading && providerValue.value != null)
+          if(providerValue.value != null && _isSearching)
             Flexible(
                 child: Container(
                   padding: EdgeInsets.only(left: (_isSearching ? 0:  30), right: (_isSearching ? 0:  30)),
                   child:  ListView.builder(
+                      controller: _scrollController,
                       itemCount: providerValue.value!.length,
                       itemBuilder: (context, index) {
                         return GestureDetector(
@@ -146,6 +156,10 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                   ),
                 )
             ),
+            SizedBox(
+              width: _size.width,
+              height: 1,
+            )
           ],
         )
     );
