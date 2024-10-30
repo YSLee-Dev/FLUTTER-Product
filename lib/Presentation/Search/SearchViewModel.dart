@@ -34,7 +34,13 @@ class SearchViewModel extends _$SearchViewModel {
     await Future.delayed(Duration(seconds: 1));
 
     _nowPage = 0;
-    state =  AsyncValue.data(await _requestProductSearch(query: _watingWord));
+    final nowSearchWord = _watingWord;
+    state =  AsyncValue.data(await _requestProductSearch(query: nowSearchWord));
+
+    // 검색 도중에 입력된 값이 있을 경우 다시 로딩해요.
+    if (nowSearchWord != _watingWord) {
+      querySearch(query: _watingWord);
+    }
   }
 
   void morePageRequest() async {
