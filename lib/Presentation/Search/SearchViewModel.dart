@@ -11,6 +11,8 @@ class SearchViewModel extends _$SearchViewModel {
   bool _isWating = false;
   String _watingWord = "";
   bool _isEnd = false;
+  bool isRecommend = true;
+
   final IProductManager _productManager;
 
   SearchViewModel({IProductManager? productManager})
@@ -60,6 +62,7 @@ class SearchViewModel extends _$SearchViewModel {
     final data =  await _productManager.requestSearchProduct(page: _nowPage, query: query);
     _isWating = false;
     _nowPage ++;
+    isRecommend = query == "";
     print("${_nowPage}, ${query} ");
     return data;
   }
