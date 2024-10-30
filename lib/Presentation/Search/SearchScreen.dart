@@ -3,8 +3,11 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_product/Component/CommonWidget/CommonMainWidget.dart';
 import 'package:flutter_product/Component/CommonWidget/CommonText.dart';
+import 'package:flutter_product/Component/Router/app_router.dart';
 import 'package:flutter_product/Presentation/Search/SearchViewModel.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import '../../Component/CommonWidget/CommonProductWidget.dart';
 
 @RoutePage()
 class SearchScreen extends ConsumerStatefulWidget {
@@ -40,8 +43,9 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
 
   @override
   Widget build(BuildContext context) {
-    late final  _size = MediaQuery.of(context).size;
-    final _providerValue = ref.watch(searchViewModelProvider);
+    late final  size = MediaQuery.of(context).size;
+    final providerValue = ref.watch(searchViewModelProvider);
+    final router = AutoRouter.of(context);
 
     return CommonMainWidget(
         title: _isAnimation ? "" : (_isSearching ? "" : "Search" ),
@@ -72,7 +76,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                     child: AnimatedSize(
                         duration: const  Duration(milliseconds: 250),
                         child:  SizedBox(
-                          width: _isSearching ?_size.width : _size.width - 80,
+                          width: _isSearching ?size.width : size.width - 80,
                           child: FadeTransition(opacity: animation, child: widget,),
                         ),
                     )
@@ -101,14 +105,14 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                 key: const ValueKey<bool>(false),
                 padding: const EdgeInsets.only(bottom: 50),
                 height: 100,
-                alignment: Alignment.topLeft,
+                alignment: Alignment.bottomLeft,
                 child: TextField(
                   focusNode: _tfNode,
                   controller: _textEditingController,
                   style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   decoration: const InputDecoration(
                       hintText: "Search for products",
-                      hintStyle: TextStyle(fontWeight: FontWeight.bold, fontSize:  20),
+                      hintStyle: TextStyle(fontWeight: FontWeight.bold, fontSize:  20, color: Colors.black45),
                       border: UnderlineInputBorder(borderSide: BorderSide(color: Colors.black, width: 1.5)),
                       enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.black, width: 1.5)),
                       focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.black, width: 2.5),
@@ -117,18 +121,31 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
               ),
           ),
             SizedBox(height: _isSearching ? 0 : 25,),
-          if(_providerValue.value != null && _isSearching)
+          if(providerValue.isLoading && _isSearching)
+            const SizedBox(
+              width: 50,
+                height: 50,
+                child: CircularProgressIndicator(
+                  valueColor:  AlwaysStoppedAnimation<Color> (Colors.white), backgroundColor: Colors.black, strokeWidth: 2,)
+              ,
+            ),
+          if(!providerValue.isLoading && providerValue.value != null)
             Flexible(
                 child: Container(
-                  padding: const EdgeInsets.only(left: 30, right: 30),
+                  padding: EdgeInsets.only(left: (_isSearching ? 0:  30), right: (_isSearching ? 0:  30)),
                   child:  ListView.builder(
-                      itemCount: _providerValue.value!.length,
+                      itemCount: providerValue.value!.length,
                       itemBuilder: (context, index) {
-                        return CommonText(text: "${_providerValue.value![index].title}", fontSize: 15);
+                        return GestureDetector(
+                          onTap: () {
+                            router.push(DetailRoute(sendedProductModel: providerValue.value![index]));
+                          },
+                          child: ComminProductWidget(model: providerValue.value![index]),
+                        );
                       }
                   ),
                 )
-            )
+            ),
           ],
         )
     );
