@@ -140,7 +140,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
             ),
           if(providerValue.value != null && _isSearching && providerValue.value!.isEmpty && !providerValue.isLoading && !ref.read(searchViewModelProvider.notifier).isRecommend)
            CommonText(text: "No search results", fontSize: 20, fontWeight: FontWeight.w500,),
-           if(providerValue.value != null && _isSearching && !providerValue.isLoading && ref.read(searchViewModelProvider.notifier).isRecommend)
+           if(providerValue.value != null && _isSearching && providerValue.value!.isNotEmpty && ref.read(searchViewModelProvider.notifier).isRecommend)
            Container(
              width: _size.width,
              decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Colors.black12, width: 0.5))),
