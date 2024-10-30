@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
-import 'package:flutter_product/Component/Dependency/IProductManager.dart';
-import 'package:flutter_product/Component/Dependency/ProductManager.dart';
+import 'package:flutter_product/Component/Dependency/ProductManager//IProductManager.dart';
+import 'package:flutter_product/Component/Dependency/ProductManager/ProductManager.dart';
 import 'package:flutter_product/Component/Model/ProductModel.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';

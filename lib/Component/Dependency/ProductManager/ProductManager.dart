@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:flutter_product/Component/Model/ProductModel.dart';
 import 'package:flutter_product/Component/Network/INetworkManager.dart';
 import 'package:flutter_product/Component/Network/NetworkManager.dart';
-import 'IProductManager.dart';
+import '../ProductManager//IProductManager.dart';
 
 class ProductManager implements IProductManager {
   static final _shared = ProductManager._internal();

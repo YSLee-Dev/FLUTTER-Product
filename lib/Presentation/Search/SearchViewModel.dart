@@ -1,7 +1,7 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-import '../../Component/Dependency/IProductManager.dart';
-import '../../Component/Dependency/ProductManager.dart';
+import '../../Component/Dependency/ProductManager//IProductManager.dart';
+import '../../Component/Dependency/ProductManager/ProductManager.dart';
 import '../../Component/Model/ProductModel.dart';
 part 'SearchViewModel.g.dart';
 
