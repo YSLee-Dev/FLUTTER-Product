@@ -22,6 +22,7 @@ class SearchKeywordProvider extends _$SearchKeywordProvider {
   }
 
   void addKeyword({required String keyword})   {
+    if (state.value?.contains(keyword) ?? true) {return;}
     List<String> updatedList = [...state.value!];
     updatedList.add(keyword);
     state = AsyncData(updatedList);
