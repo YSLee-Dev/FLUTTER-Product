@@ -7,6 +7,7 @@ import 'package:flutter_product/Presentation/Detail/DetailScreen.dart';
 import 'package:flutter_product/Presentation/Home/HomeViewModel.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../Component/CommonWidget/CommonProductWidget.dart';
 import '../../Component/CommonWidget/CommonText.dart';
 
 @RoutePage()
@@ -107,49 +108,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 itemBuilder: (context, index) {
                   return GestureDetector(
                     onTap: () => _router.push(DetailRoute(sendedProductModel:  _provider.value![index],)),
-                    child: Container(
-                      padding: EdgeInsets.symmetric(vertical: 10),
-                      child: Row(
-                        children: [
-                          Container(
-                            height: 120,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(15),
-                              border: Border.all(color: Colors.black38, width: 1),
-                            ),
-                            child: Image.network(
-                              '${_provider.value![index].thumbnail}',
-                              loadingBuilder: (context, child, loadingProgress) {
-                                if (loadingProgress == null) {
-                                  return SizedBox(width: 120, height: 120, child: child);
-                                }
-                                return SizedBox(
-                                  width: 120,
-                                  height: 120,
-                                  child: CircularProgressIndicator(),
-                                );
-                              },
-                            ),
-                          ),
-                          SizedBox(width: 10),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                CommonText(text: '${_provider.value![index].title}', fontSize: 20, fontWeight: FontWeight.bold, maxLine: 3,),
-                                Row(
-                                  children: [
-                                    CommonText(text: '${_provider.value![index].price}', fontSize: 15, fontWeight: FontWeight.bold),
-                                    SizedBox(width: 10),
-                                    CommonText(text: '${_provider.value![index].tags?.first ?? ""}', fontSize: 15),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
+                    child: ComminProductWidget(model: _provider.value![index])
                   );
                 },
               )
