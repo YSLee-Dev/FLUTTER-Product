@@ -3,42 +3,41 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'ISearchKeywordManager.dart';
 
 class SearchKeywordManager implements ISearchKeywordManager {
-  static final searchKeywordManager = SearchKeywordManager._internal();
-  late SharedPreferences _prefs;
+  static  SearchKeywordManager? _searchKeywordManager;
+  static late SharedPreferences _prefs;
   final _prefsKey = "prefsKey";
-  List<String> _nowSearchKeyword = [];
 
-  SearchKeywordManager._internal() {
-    _initPrefs();
+  SearchKeywordManager._internal();
+
+  static Future<SearchKeywordManager> getInstance() async {
+    if (_searchKeywordManager == null) {
+      _searchKeywordManager = SearchKeywordManager._internal();
+      await _initPrefs();
+      return _searchKeywordManager!;
+    } else {
+      return _searchKeywordManager!;
+    }
   }
 
-  Future<void> _initPrefs() async {
+  static Future<void> _initPrefs() async {
     _prefs = await SharedPreferences.getInstance();
-    _nowSearchKeyword = await _readSaveKeyword();
   }
 
   Future<List<String>> _readSaveKeyword() async {
     return await _prefs.getStringList(_prefsKey) ?? [];
   }
 
-  Future<void> _prefsKeySave() async {
-    await _prefs.setStringList(_prefsKey, _nowSearchKeyword);
+  Future<void> _prefsKeySave({required List<String> keywords}) async {
+    await _prefs.setStringList(_prefsKey, keywords);
   }
 
   @override
-  void saveKeyword({required String keyword}) async {
-    _nowSearchKeyword.add(keyword);
-      await _prefsKeySave();
+  Future<void> saveKeyword({required List<String> keywords})async {
+      await _prefsKeySave(keywords: keywords);
   }
 
   @override
-  List<String> nowSaveKeyword() {
-    return _nowSearchKeyword;
-  }
-
-  @override
-  void keywordRemove({required String keyword}) async {
-    _nowSearchKeyword.remove(keyword);
-    await _prefsKeySave();
+  Future<List<String>> nowSaveKeywordRequest() async {
+    return await _readSaveKeyword();
   }
 }
