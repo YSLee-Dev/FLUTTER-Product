@@ -59,8 +59,8 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
     final searchKeywordProvider = ref.watch(searchKeywordProviderProvider);
 
     return CommonMainWidget(
-        title: _isAnimation ? "" : (_isSearching ? "" : "Search" ),
-        isBackIconShow: _isAnimation ? false : _isSearching,
+        title: _isSearching ? "" : "Search",
+        isBackIconShow: _isSearching ,
         action: () {
           setState(() {
             _isSearching = false;
@@ -69,23 +69,25 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
         widget: Column(
           children: [
           AnimatedSwitcher(
-              duration: const Duration(milliseconds: 250),
+              duration: const Duration(milliseconds: 400),
+              switchInCurve: Curves.easeInOutCirc,
+              switchOutCurve: Curves.easeInOutCirc,
               transitionBuilder: (widget, animation) {
                 animation.addListener(() {
                   WidgetsBinding.instance.addPostFrameCallback((_) {
-                    if(mounted) {
-                      setState(() {
-                        if (_isAnimation != (!animation.isCompleted)) {
-                          _isAnimation = !animation.isCompleted;
-                        }
-                      });
-                    }
+                    if(!mounted) {return;}
+                    setState(() {
+                      if (animation.isCompleted) {
+                        _isAnimation = false;
+                      }
+                    });
                   });
                 });
                 return SlideTransition(
-                    position: Tween<Offset>(begin:  Offset(0.0, -0.7), end: Offset.zero).animate(animation),
+                    position: Tween<Offset>(begin:  Offset(0.0, -0.4), end: Offset.zero).animate(animation),
                     child: AnimatedSize(
-                        duration: const  Duration(milliseconds: 250),
+                        duration: const  Duration(milliseconds: 400),
+                        curve: Curves.easeInOutCirc,
                         child:  SizedBox(
                           width: _isSearching ?_size.width : _size.width - 80,
                           child: FadeTransition(opacity: animation, child: widget,),
@@ -97,6 +99,8 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                 onTap: () {
                   setState(() {
                     _isSearching = !_isSearching;
+                    _isAnimation = true;
+
                     if (_isSearching) {
                       Future.delayed(Duration(milliseconds: 300), () {
                         FocusScope.of(context).requestFocus(_tfNode);
@@ -136,7 +140,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
               ),
           ),
            SizedBox(height: _isSearching ? 0 : 25,),
-          if(searchKeywordProvider.value != null && !_isSearching)
+          if(searchKeywordProvider.value != null && !_isSearching && !_isAnimation)
           Flexible(
             child: ListView.builder(
                 itemCount: searchKeywordProvider.value!.length,
@@ -177,14 +181,14 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
             ),
           if(providerValue.value != null && _isSearching && providerValue.value!.isEmpty && !providerValue.isLoading && !ref.read(searchViewModelProvider.notifier).isRecommend)
            CommonText(text: "No search results", fontSize: 20, fontWeight: FontWeight.w500,),
-           if(providerValue.value != null && _isSearching && providerValue.value!.isNotEmpty && ref.read(searchViewModelProvider.notifier).isRecommend)
+           if(providerValue.value != null && _isSearching && providerValue.value!.isNotEmpty && ref.read(searchViewModelProvider.notifier).isRecommend && !_isAnimation)
            Container(
              width: _size.width,
              decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Colors.black12, width: 0.5))),
              padding: EdgeInsets.only(bottom: 10),
              child: CommonText(text: "Recommend Product", fontSize: 20, textAlign: TextAlign.left, fontWeight: FontWeight.bold,),
            ),
-          if(providerValue.value != null && _isSearching)
+          if(providerValue.value != null && _isSearching && !_isAnimation)
             Flexible(
                 child: Container(
                   padding: EdgeInsets.only(left: (_isSearching ? 0:  30), right: (_isSearching ? 0:  30)),
