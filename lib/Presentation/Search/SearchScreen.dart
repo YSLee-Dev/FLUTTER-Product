@@ -141,17 +141,28 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
             child: ListView.builder(
                 itemCount: searchKeywordProvider.value!.length,
                 itemBuilder: (context, index) {
-                  return GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        _isSearching = true;
-                        _textEditingController.text = searchKeywordProvider.value![index];
-                      });
-                    },
-                    child:  Container(
+                  return  Container(
                       padding: EdgeInsets.only(left: 20, right: 20, top: 7.5, bottom: 7.5),
-                      child: CommonText(text: searchKeywordProvider.value![index], fontSize: 18, fontWeight: FontWeight.w500,),
-                    ),
+                      child: Row(
+                        children: [
+                          GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  _isSearching = true;
+                                  _textEditingController.text = searchKeywordProvider.value![index];
+                                });
+                              },
+                              child:   CommonText(text: searchKeywordProvider.value![index], fontSize: 18, fontWeight: FontWeight.w500,),
+                          ),
+                          Spacer(),
+                          GestureDetector(
+                            onTap: () {
+                              ref.read(searchKeywordProviderProvider.notifier).removeKeyword(keyword: searchKeywordProvider.value![index]);
+                            },
+                            child:  Icon(Icons.remove),
+                          )
+                        ],
+                      )
                   );
                 }
             )

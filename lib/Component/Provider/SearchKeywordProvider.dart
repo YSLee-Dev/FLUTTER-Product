@@ -17,7 +17,9 @@ class SearchKeywordProvider extends _$SearchKeywordProvider {
   }
 
    void removeKeyword({required String keyword}) {
-    state.value!.remove(keyword);
+    List<String> nowKeyword = state.value!;
+    nowKeyword.remove(keyword);
+    state = AsyncData(nowKeyword);
     _manager.saveKeyword(keywords: state.value!);
   }
 
