@@ -56,31 +56,32 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       isBackIconShow: false,
       widget: Column(
         children: [
-          SizedBox(height: 20),
+          SizedBox(height: 5),
           Row(
             children: [
-              Expanded(
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: _nowListShowTapped ? Colors.black : Colors.black26,
-                  ),
-                  onPressed: () => _viewCategoryBtnTapped(isList: true),
-                  child: CommonText(text: "List", fontSize: 15, fontColor: Colors.white,)
-                ),
+              GestureDetector(
+                  onTap: () => _viewCategoryBtnTapped(isList: true),
+                  child: Container(
+                    width: 50,
+                    height: 50,
+                    child:  Icon(Icons.list, color: !_nowListShowTapped ? Colors.black38 : Colors.black)
+                  )
               ),
-              SizedBox(width: 20),
-              Expanded(
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: !_nowListShowTapped ? Colors.black : Colors.black26,
-                  ),
-                  onPressed: () => _viewCategoryBtnTapped(isList: false),
-                    child: CommonText(text: "Grid", fontSize: 15, fontColor: Colors.white,)
-                ),
+              SizedBox(width: 10,),
+              GestureDetector(
+                onTap: () => _viewCategoryBtnTapped(isList: false),
+                child: Container(
+                  width: 50,
+                  height: 50,
+                  child:  Icon(Icons.grid_3x3, color: _nowListShowTapped ? Colors.black38 : Colors.black) ,
+                )
               ),
             ],
           ),
-          SizedBox(height: 30),
+          Container(
+            height: 5,
+            decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Colors.black12, width: 0.5))),
+          ),
           if (_provider.value?.isEmpty ?? true)
             SizedBox(
               width: 100,
@@ -119,6 +120,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   crossAxisCount: 2,
                   mainAxisSpacing: 10,
                   crossAxisSpacing: 10,
+                  childAspectRatio: 1/1.3,
                 ),
                 itemCount: _provider.value!.length,
                 itemBuilder: (context, index) {
@@ -127,50 +129,37 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     child: Container(
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(15),
-                        border: Border.all(color: Colors.black38, width: 1),
                       ),
-                      child: Stack(
-                        alignment: Alignment.bottomCenter,
+                      child: Column(
                         children: [
-                          Image.network(
-                            '${_provider.value![index].thumbnail}',
-                            loadingBuilder: (context, child, loadingProgress) {
-                              if (loadingProgress == null) {
-                                return child;
-                              }
-                              return CircularProgressIndicator();
-                            },
-                          ),
-                          Container(
-                            padding: EdgeInsets.all(5),
-                            height: 60,
-                            decoration: BoxDecoration(
-                              color: Colors.black45,
-                              borderRadius: BorderRadius.only(
-                                bottomLeft: Radius.circular(15),
-                                bottomRight: Radius.circular(15),
+                          Flexible(
+                            child:   Container(
+                              color: Colors.black12.withOpacity(0.025),
+                              child: Image.network(
+                                '${_provider.value![index].thumbnail}',
+                                loadingBuilder: (context, child, loadingProgress) {
+                                  if (loadingProgress == null) {
+                                    return child;
+                                  }
+                                  return CircularProgressIndicator();
+                                },
                               ),
                             ),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: [
-                                CommonText(text: '${_provider.value![index].title}', fontSize: 17, fontWeight: FontWeight.bold, fontColor: Colors.white,),
-                                SizedBox(width: 10),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Flexible(
-                                      child: CommonText(text: '${_provider.value![index].price}', fontSize: 15, fontWeight: FontWeight.bold, fontColor: Colors.white, textAlign: TextAlign.right)
-                                    ),
-                                    SizedBox(width: 5),
-                                    Flexible(
-                                      child: CommonText(text:'${_provider.value![index].tags?.first ?? ""}', fontSize: 15, fontColor: Colors.white)
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
+                          ),
+                          CommonText(text: '${_provider.value![index].title}', fontSize: 16, fontWeight: FontWeight.bold,),
+                          SizedBox(width: 10),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Flexible(
+                                  child: CommonText(text: '${_provider.value![index].price}', fontSize: 13, fontWeight: FontWeight.bold, textAlign: TextAlign.right)
+                              ),
+                              SizedBox(width: 5),
+                              Flexible(
+                                  child: CommonText(text:'${_provider.value![index].tags?.first ?? ""}', fontSize: 14)
+                              ),
+                            ],
                           ),
                         ],
                       ),
