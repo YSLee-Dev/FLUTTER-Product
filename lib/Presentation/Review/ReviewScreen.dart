@@ -52,7 +52,7 @@ class ReviewScreenState extends ConsumerState<ReviewScreen> {
                         Container(
                             width: 100,
                             height: 35,
-                            decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(15)), color: Color(0xfffcffcc),)
+                            decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(15)), color: Color(0xfffaf6b9),)
                         ),
                         CommonText(text: "${_provider[index].name}", fontSize: 19, fontWeight: FontWeight.bold,)
                       ],

@@ -135,12 +135,12 @@ class _DetailScreenState extends ConsumerState<DetailScreen> {
                   Container(
                     decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(15)), color: Colors.black12),
                     width: _screenWidth,
-                    height: 20,
+                    height: 10,
                   ),
                   Container(
                     decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(15)), color: Colors.black87),
                     width: _screenWidth - (_screenWidth / max(((_provider.images?.length ?? 1) - 1), 1) * max((((_provider.images?.length ?? 1) - 1) - _nowPage), 0)),
-                    height: 20,
+                    height: 10,
                   )
                 ],
               ),
@@ -149,8 +149,8 @@ class _DetailScreenState extends ConsumerState<DetailScreen> {
                 alignment: Alignment.centerLeft,
                 children: [
                   Container(
-                    decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(15)), color: Color(0xfffcffcc),),
-                    width: 100,
+                    decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(20)), color: Color(0xfffaf6b9),),
+                    width: 90,
                     height: 50,
                   ),
                   CommonText(text: "${_provider.title}", fontSize: 21, fontWeight: FontWeight.bold, maxLine: 2,)

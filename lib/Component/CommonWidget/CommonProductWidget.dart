@@ -33,7 +33,7 @@ class ComminProductWidget extends StatelessWidget {
               children: [
                 Container(
                   padding: EdgeInsets.all(2.5),
-                  decoration: BoxDecoration(color: Color(0xfffcffcc).withOpacity(0.5), border: Border.all(color: Colors.black12, width: 0.5) ,borderRadius: BorderRadius.circular(5)),
+                  decoration: BoxDecoration(color: Color(0xfffaf6b9), border: Border.all(color: Colors.black12, width: 0.25) ,borderRadius: BorderRadius.circular(7.5)),
                   child:   CommonText(text: '${_sendedModel.tags?.first ?? ""}', fontSize: 14, fontColor: Colors.black, fontWeight: FontWeight.w500,),
                 ),
                 CommonText(text: '${_sendedModel.title}', fontSize: 17, fontWeight: FontWeight.w700, maxLine: 3,),
