@@ -63,6 +63,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
         isBackIconShow: _isSearching ,
         action: () {
           setState(() {
+            _textEditingController.text = "";
             _isSearching = false;
           });
         },
