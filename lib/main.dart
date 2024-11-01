@@ -2,12 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_product/Component/Model/ProductModel.dart';
 import 'package:flutter_product/Component/Router/app_router.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../Presentation/Home/HomeScreen.dart';
-import '../Presentation/Detail/DetailScreen.dart';
-import '../Presentation/Review/ReviewScreen.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 
 void main() {
+  WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+  FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
+
   runApp(ProviderScope(child: MyApp()));
+
+  FlutterNativeSplash.remove();
 }
 
 class MyApp extends StatelessWidget {
