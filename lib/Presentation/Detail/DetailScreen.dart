@@ -118,12 +118,12 @@ class _DetailScreenState extends ConsumerState<DetailScreen> {
                       if (!_imageWidgetLeftArrowisHideen)
                         Container(
                             alignment: Alignment.centerLeft,
-                            child: CommonText(text: "◀", fontSize: 25, fontWeight: FontWeight.w600, fontColor: Colors.black87)
+                            child: Icon(Icons.chevron_left_rounded, size: 30,)
                         ),
                       if (!_imageWidgetRightArrowisHideen && (_provider.images?.length ?? 0) >= 2)
                         Container(
                             alignment: Alignment.centerRight,
-                            child: CommonText(text: "▶", fontSize: 25, fontWeight: FontWeight.w600, fontColor: Colors.black87)
+                            child: Icon(Icons.chevron_right_rounded, size: 30,)
                         )
                     ],
                   )
@@ -200,7 +200,12 @@ class _DetailScreenState extends ConsumerState<DetailScreen> {
                   if (_provider.reviews == null ){return;}
                   _router.push(ReviewRoute(sendedReviewModelList:  _provider.reviews!));
                 },
-                child: CommonText(text: "Reviews →", fontSize: 21, fontWeight: FontWeight.bold),
+                child: Row(
+                  children: [
+                    CommonText(text: "Reviews", fontSize: 21, fontWeight: FontWeight.bold),
+                    Icon(Icons.chevron_right_rounded)
+                  ],
+                ),
               ),
               SizedBox(height: 5,),
               Container(

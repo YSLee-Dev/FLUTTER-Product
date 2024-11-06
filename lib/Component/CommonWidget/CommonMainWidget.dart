@@ -21,7 +21,7 @@ class CommonMainWidget extends StatelessWidget {
   Widget _createWidget() {
    return Container(
      decoration: BoxDecoration(borderRadius: _borderRadius, color: _backGroundColor),
-     padding: EdgeInsets.only(left: 20, right: 20, top: 10),
+     padding: EdgeInsets.only(top: 10),
      child: Column(
        mainAxisSize: MainAxisSize.min,
        crossAxisAlignment: CrossAxisAlignment.start,
@@ -32,9 +32,23 @@ class CommonMainWidget extends StatelessWidget {
                _titleTappedAction!();
              }
            },
-           child: Text("${_isBackIconShow ? "← " : ""}${_title}", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25),),
+           child: Container(
+             padding: EdgeInsets.only(left: _isBackIconShow ? 10 : 20, right: 20),
+             child:   Row(
+               children: [
+                 if(_isBackIconShow)
+                  Icon(Icons.chevron_left_rounded, size: 35),
+                 Text("${_title}", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25),),
+               ],
+             ),
+           )
          ),
-         Flexible(child: _widget)
+         Flexible(child:
+         Container(
+           padding: EdgeInsets.only(left: 20, right: 20),
+           child: _widget,
+         )
+         )
        ],
      ),
    );
