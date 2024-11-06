@@ -1,7 +1,5 @@
+import 'package:flutter_product/Component/Dependency/ProductManager/NewProductManager.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-
-import '../../Component/Dependency/ProductManager//IProductManager.dart';
-import '../../Component/Dependency/ProductManager/ProductManager.dart';
 import '../../Component/Model/ProductModel.dart';
 part 'SearchViewModel.g.dart';
 
@@ -12,12 +10,7 @@ class SearchViewModel extends _$SearchViewModel {
   String _watingWord = "";
   bool _isEnd = false;
   bool isRecommend = true;
-
-  final IProductManager _productManager;
-
-  SearchViewModel({IProductManager? productManager})
-      : _productManager = productManager ?? ProductManager();
-
+  
   @override
   Future<List<ProductModel>> build() async {
     return <ProductModel>[];
@@ -59,7 +52,7 @@ class SearchViewModel extends _$SearchViewModel {
   }
 
   Future<List<ProductModel>> _requestProductSearch({required String query}) async {
-    final data =  await _productManager.requestSearchProduct(page: _nowPage, query: query);
+    final data =  await ref.read(newProductManagerProvider).requestSearchProduct(page: _nowPage, query: query);
     _isWating = false;
     _nowPage ++;
     isRecommend = query == "";

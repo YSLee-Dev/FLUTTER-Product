@@ -5,6 +5,16 @@ part 'ProductModel.freezed.dart';
 part 'ProductModel.g.dart';
 
 @freezed
+class ProductResponseModel with _$ProductResponseModel {
+  factory ProductResponseModel({
+    required List<ProductModel> products,
+  }) = _ProductResponseModel;
+
+  factory ProductResponseModel.fromJson(Map<String, dynamic> json) =>
+      _$ProductResponseModelFromJson(json);
+}
+
+@freezed
 class ProductModel with _$ProductModel {
   factory ProductModel({
     required int id,
@@ -13,11 +23,11 @@ class ProductModel with _$ProductModel {
     double? price,
     double? discountPercentage,
     String? thumbnail,
-    List<String>? tags,
+    @Default([])  List<String>? tags,
     String? brand,
     required int stock,
-    List<ProductReviewModel>? reviews,
-    List<String>? images,
+    @Default([]) List<ProductReviewModel>? reviews,
+    @Default([])  List<String>? images,
   }) = _ProductModel;
 
   factory ProductModel.fromJson(Map<String, dynamic> json) =>

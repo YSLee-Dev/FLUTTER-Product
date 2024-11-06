@@ -14,6 +14,166 @@ T _$identity<T>(T value) => value;
 final _privateConstructorUsedError = UnsupportedError(
     'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
+ProductResponseModel _$ProductResponseModelFromJson(Map<String, dynamic> json) {
+  return _ProductResponseModel.fromJson(json);
+}
+
+/// @nodoc
+mixin _$ProductResponseModel {
+  List<ProductModel> get products => throw _privateConstructorUsedError;
+
+  /// Serializes this ProductResponseModel to a JSON map.
+  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+
+  /// Create a copy of ProductResponseModel
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  $ProductResponseModelCopyWith<ProductResponseModel> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class $ProductResponseModelCopyWith<$Res> {
+  factory $ProductResponseModelCopyWith(ProductResponseModel value,
+          $Res Function(ProductResponseModel) then) =
+      _$ProductResponseModelCopyWithImpl<$Res, ProductResponseModel>;
+  @useResult
+  $Res call({List<ProductModel> products});
+}
+
+/// @nodoc
+class _$ProductResponseModelCopyWithImpl<$Res,
+        $Val extends ProductResponseModel>
+    implements $ProductResponseModelCopyWith<$Res> {
+  _$ProductResponseModelCopyWithImpl(this._value, this._then);
+
+  // ignore: unused_field
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
+
+  /// Create a copy of ProductResponseModel
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? products = null,
+  }) {
+    return _then(_value.copyWith(
+      products: null == products
+          ? _value.products
+          : products // ignore: cast_nullable_to_non_nullable
+              as List<ProductModel>,
+    ) as $Val);
+  }
+}
+
+/// @nodoc
+abstract class _$$ProductResponseModelImplCopyWith<$Res>
+    implements $ProductResponseModelCopyWith<$Res> {
+  factory _$$ProductResponseModelImplCopyWith(_$ProductResponseModelImpl value,
+          $Res Function(_$ProductResponseModelImpl) then) =
+      __$$ProductResponseModelImplCopyWithImpl<$Res>;
+  @override
+  @useResult
+  $Res call({List<ProductModel> products});
+}
+
+/// @nodoc
+class __$$ProductResponseModelImplCopyWithImpl<$Res>
+    extends _$ProductResponseModelCopyWithImpl<$Res, _$ProductResponseModelImpl>
+    implements _$$ProductResponseModelImplCopyWith<$Res> {
+  __$$ProductResponseModelImplCopyWithImpl(_$ProductResponseModelImpl _value,
+      $Res Function(_$ProductResponseModelImpl) _then)
+      : super(_value, _then);
+
+  /// Create a copy of ProductResponseModel
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? products = null,
+  }) {
+    return _then(_$ProductResponseModelImpl(
+      products: null == products
+          ? _value._products
+          : products // ignore: cast_nullable_to_non_nullable
+              as List<ProductModel>,
+    ));
+  }
+}
+
+/// @nodoc
+@JsonSerializable()
+class _$ProductResponseModelImpl implements _ProductResponseModel {
+  _$ProductResponseModelImpl({required final List<ProductModel> products})
+      : _products = products;
+
+  factory _$ProductResponseModelImpl.fromJson(Map<String, dynamic> json) =>
+      _$$ProductResponseModelImplFromJson(json);
+
+  final List<ProductModel> _products;
+  @override
+  List<ProductModel> get products {
+    if (_products is EqualUnmodifiableListView) return _products;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_products);
+  }
+
+  @override
+  String toString() {
+    return 'ProductResponseModel(products: $products)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$ProductResponseModelImpl &&
+            const DeepCollectionEquality().equals(other._products, _products));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode =>
+      Object.hash(runtimeType, const DeepCollectionEquality().hash(_products));
+
+  /// Create a copy of ProductResponseModel
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$ProductResponseModelImplCopyWith<_$ProductResponseModelImpl>
+      get copyWith =>
+          __$$ProductResponseModelImplCopyWithImpl<_$ProductResponseModelImpl>(
+              this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$ProductResponseModelImplToJson(
+      this,
+    );
+  }
+}
+
+abstract class _ProductResponseModel implements ProductResponseModel {
+  factory _ProductResponseModel({required final List<ProductModel> products}) =
+      _$ProductResponseModelImpl;
+
+  factory _ProductResponseModel.fromJson(Map<String, dynamic> json) =
+      _$ProductResponseModelImpl.fromJson;
+
+  @override
+  List<ProductModel> get products;
+
+  /// Create a copy of ProductResponseModel
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$ProductResponseModelImplCopyWith<_$ProductResponseModelImpl>
+      get copyWith => throw _privateConstructorUsedError;
+}
+
 ProductModel _$ProductModelFromJson(Map<String, dynamic> json) {
   return _ProductModel.fromJson(json);
 }
@@ -244,11 +404,11 @@ class _$ProductModelImpl implements _ProductModel {
       this.price,
       this.discountPercentage,
       this.thumbnail,
-      final List<String>? tags,
+      final List<String>? tags = const [],
       this.brand,
       required this.stock,
-      final List<ProductReviewModel>? reviews,
-      final List<String>? images})
+      final List<ProductReviewModel>? reviews = const [],
+      final List<String>? images = const []})
       : _tags = tags,
         _reviews = reviews,
         _images = images;
@@ -270,6 +430,7 @@ class _$ProductModelImpl implements _ProductModel {
   final String? thumbnail;
   final List<String>? _tags;
   @override
+  @JsonKey()
   List<String>? get tags {
     final value = _tags;
     if (value == null) return null;
@@ -284,6 +445,7 @@ class _$ProductModelImpl implements _ProductModel {
   final int stock;
   final List<ProductReviewModel>? _reviews;
   @override
+  @JsonKey()
   List<ProductReviewModel>? get reviews {
     final value = _reviews;
     if (value == null) return null;
@@ -294,6 +456,7 @@ class _$ProductModelImpl implements _ProductModel {
 
   final List<String>? _images;
   @override
+  @JsonKey()
   List<String>? get images {
     final value = _images;
     if (value == null) return null;

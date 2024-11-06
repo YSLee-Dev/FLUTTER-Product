@@ -1,6 +1,4 @@
-import 'package:flutter/foundation.dart';
-import 'package:flutter_product/Component/Dependency/ProductManager//IProductManager.dart';
-import 'package:flutter_product/Component/Dependency/ProductManager/ProductManager.dart';
+import 'package:flutter_product/Component/Dependency/ProductManager/NewProductManager.dart';
 import 'package:flutter_product/Component/Model/ProductModel.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -10,10 +8,6 @@ part 'HomeViewModel.g.dart';
 @riverpod
 class HomeViewModel extends _$HomeViewModel {
   int nowPage = 0;
-  final IProductManager _productManager;
-
-  HomeViewModel({IProductManager? productManager})
-   : _productManager = productManager ?? ProductManager();
 
   @override
   Future<List<ProductModel>> build() async {
@@ -26,10 +20,11 @@ class HomeViewModel extends _$HomeViewModel {
   }
 
   Future<List<ProductModel>> _requestProductList({int count = 10}) async {
-    nowPage ++;
-    print("${nowPage} ${count}");
-    state =  AsyncLoading();
+    nowPage++;
+    state = const AsyncLoading();
 
-    return await _productManager.requestMainProduct(nowPage, count);
+    // provider를 직접 사용
+    final productManager = ref.read(newProductManagerProvider);
+    return await productManager.requestMainProduct(nowPage, count);
   }
 }
